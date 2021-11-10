@@ -1,5 +1,5 @@
 var mqtt = { hostname: "co2.quest", port: 9393 };
-var topic_name = "light/dli";
+var topic_name = "light/dd";
 var publish_cnt = 0;
 // called when the client loses its connection
 function onConnectionLost(responseObject) {
