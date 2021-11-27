@@ -4,12 +4,12 @@
 <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
  
- <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-<link rel="icon" href="favicon.ico" type="image/x-icon">
+ <link rel="shortcut icon" href="../assets/favicon.ico" type="image/x-icon">
+<link rel="icon" href="../assets/favicon.ico" type="image/x-icon">
 <head>
-  <title>Pollen-Net: Сигнализация за наличие на поленови алергени във въздуха</title>
-  <script src="paho-mqtt.js"></script>
-  <script src="util.js"></script>
+  <title>Сигнализация за наличие на поленови алергени във въздуха</title>
+  <script src="../assets/paho-mqtt.js"></script>
+  <script src="../assets/util.js"></script>
    
 
   <style>
@@ -47,54 +47,7 @@ background-image: linear-gradient( 180.5deg,  rgba(46,255,171,1) 12.3%, rgba(252
   top:-0.14em;
   left:10px;
 }
-.modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  padding-top: 100px; /* Location of the box */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
 
-/* Modal Content */
-.modal-content {
-  background-color: #fefefe;
-  margin: auto;
-  align-content: justify;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-}
-
-/* The Close Button */
-.close {
-  color: #aaaaaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-  color: #000;
-  text-decoration: none;
-  cursor: pointer;
-}
-.button {
-  background-color: #2effab; /* Green */
-  border: none;
-  color: #2b588b;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-}
 @media only screen and (orientation:portrait) {
   body {
     height: 100vw;
@@ -105,22 +58,12 @@ background-image: linear-gradient( 180.5deg,  rgba(46,255,171,1) 12.3%, rgba(252
 </head>
 </head>
 <body>
-<button id="myBtn" class="button">Инфо</button>
 
-<!-- The Modal -->
-<div id="myModal" class="modal">
-
-  <!-- Modal content -->
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <p align="justify">Полинозата, алергията към полена отделян от растенията е алергично заболяване засягащо дихателните пътища и очите. Регистрирани са 15 вида алергени от видове полени. Заболяването е широко разпространено в България, като по оценки от него страда до 20% от населението в пролетно-летния сезон. Настоящият проект представлява иновативна система за ранно уведомяване и прогнозиране за наличието на поленови алергени във въздуха базирана върху метода на сумата на ефективните температури с цел с покритие територията на град Велико Търново и три съседни общини (Горна Оряховица, Лясковец и Дряново) насочена към страдащи от поленова алергия в района. Използвайте скалата от тази страница и показанията в реално време за да се подготвите и предпазите, ако страдате от алергия към полени. Можете да изтеглите и инсталирате този сайт и като приложение за Андроид от този <a href="https://github.com/roman-bg/Pollen-Net">линк</a> или да получавате данните всеки ден следвайки този <a href="https://twitter.com/geovisio">twitter акаунт</a></p>
-  </div>
-
-</div>
 
 <div class='console-container'><span id='text'></span><div class='console-underscore' id='console'>&#95;</div>
-<p style="color:#006400;"><b>0-50: безопасно </b></p><p style="color:#435d77;"><b>50-65:  засилено внимание</b></p><p style="color:#da291c;"><b> 65-90: опасно</b></p>
+<p style="color:green ;"><b>0-50: безопасно </b></p><p style="color:#435d77;"><b>50-65:  засилено внимание</b></p><p style="color:#da291c;"><b> 65-90: опасно</b></p>
 <h2><b>Сигнализация за наличие на поленови алергени във въздуха</b></h2>
+
 <p id="demo" style="color:#2b588b; font-size:160%;"><b></b></p></div>
 </body>
 </html>
@@ -169,16 +112,4 @@ window.onclick = function(event) {
     modal.style.display = "none";
   }
 }
-</script><!-- Default Statcounter code for Pollen-Net https://www.pollen.sbs/ -->
-<script type="text/javascript">
-var sc_project=12682956; 
-var sc_invisible=1; 
-var sc_security="142897c3"; 
 </script>
-<script type="text/javascript"
-src="https://www.statcounter.com/counter/counter.js" async></script>
-<noscript><div class="statcounter"><a title="Web Analytics"
-href="https://statcounter.com/" target="_blank"><img class="statcounter"
-src="https://c.statcounter.com/12682956/0/142897c3/1/" alt="Web Analytics"
-referrerPolicy="no-referrer-when-downgrade"></a></div></noscript>
-<!-- End of Statcounter Code -->
