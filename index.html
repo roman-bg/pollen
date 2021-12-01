@@ -10,7 +10,9 @@
  <style>
 
 h2 {text-align: center;}
-
+p {
+color: #2596be;
+}
 div {text-align: center;}
 
 body{
@@ -122,6 +124,34 @@ a:hover {
 a:active {
   color: blue;
 }
+.highcharts-color-0 {
+    fill: #7cb5ec;
+    stroke: #7cb5ec;
+}
+
+.highcharts-axis.highcharts-color-0 .highcharts-axis-line {
+    stroke: #7cb5ec;
+}
+.highcharts-axis.highcharts-color-0 text {
+    fill: #7cb5ec;
+    font-size: 12px;
+}
+.highcharts-color-1 {
+    fill: #90ed7d;
+    stroke: #90ed7d;
+}
+.highcharts-axis.highcharts-color-1 .highcharts-axis-line {
+    stroke: #90ed7d;
+}
+
+.highcharts-axis.highcharts-color-1 text {
+    fill: #90ed7d;
+}
+
+.highcharts-yaxis .highcharts-axis-line {
+    stroke-width: 2px;
+}
+
 @media only screen and (orientation:portrait) {
   body {
     height: 100vw;
@@ -252,24 +282,43 @@ public broker and topic you can use for testing.
 	    chart = new Highcharts.Chart({
 	        chart: {
 	            renderTo: 'container',
+	            backgroundColor:'rgba(255, 255, 255, 0)',
+	            opacity: 0.5,
 	            defaultSeriesType: 'spline'
 	        },
 	        title: {
-	            text: 'Сигнализация за наличие на поленови алергени във въздуха'
+	            text: 'Сигнализация за наличие на поленови алергени във въздуха',
+	            style: {
+	            color: '#FFFFFF',
+            fontWeight: 'bold'
+            }
 	        },
 	        
 	        xAxis: {
 	            type: 'datetime',
 	            tickPixelInterval: 150,
-	            maxZoom: 20 * 1000
+	            maxZoom: 20 * 1000,
+	            lineColor: '#FF0000',
+	            className: 'highcharts-color-1',
+	            labels: {
+            style: {
+                color: '#FFFFFF',
+                fontSize:16
+            }
+        }
 	        },
 	        yAxis: {
 	            minPadding: 0.2,
 	            maxPadding: 0.2,
+	            lineColor: '#FF0000',
+	            className: 'highcharts-color-0',
 	            title: {
 	                text: 'Ден Градуси',
-	                margin: 80
+	                margin: 80,
+	               color: '#FFFFFF',
+	                fontSize:16
 	            }
+	           
 	        },
 	        series: []
 	    });        
@@ -291,7 +340,7 @@ public broker and topic you can use for testing.
   <!-- Modal content -->
   <div class="modal-content">
     <span class="close">&times;</span>
-    <p align="justify">Полинозата, алергията към полена отделян от растенията е алергично заболяване засягащо дихателните пътища и очите. Регистрирани са 15 вида алергени от видове полени. Заболяването е широко разпространено в България, като по оценки от него страда до 20% от населението в пролетно-летния сезон. Настоящият проект представлява иновативна система за ранно уведомяване и прогнозиране за наличието на поленови алергени във въздуха базирана върху метода на сумата на ефективните температури с цел с покритие територията на град Велико Търново и три съседни общини (Горна Оряховица, Лясковец и Дряново, топик vt/dd), както и територията на град София (топик sf/dd) насочена към страдащи от поленова алергия в района. Използвайте скалата от тази страница и показанията в реално време за да се подготвите и предпазите, ако страдате от алергия към полени. Можете да получавате данните всеки ден следвайки този <a href="https://twitter.com/geovisio" target="_blank">twitter акаунт</a></p>
+    <p align="justify">Полинозата, алергията към полена отделян от растенията е алергично заболяване засягащо дихателните пътища и очите. Регистрирани са 15 вида алергени от видове полени. Заболяването е широко разпространено в България, като по оценки от него страда до 20% от населението в пролетно-летния сезон. Настоящият проект представлява иновативна система за ранно уведомяване и прогнозиране за наличието на поленови алергени във въздуха базирана върху метода на сумата на ефективните температури с цел с покритие територията на град Велико Търново и три съседни общини (Горна Оряховица, Лясковец и Дряново) насочена към страдащи от поленова алергия в района. Използвайте скалата от тази страница и показанията в реално време за да се подготвите и предпазите, ако страдате от алергия към полени. Можете да получавате данните всеки ден следвайки този <a href="https://twitter.com/geovisio" target="_blank">twitter акаунт</a></p>
   </div>
 
 </div>
