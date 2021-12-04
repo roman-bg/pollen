@@ -1,68 +1,54 @@
+<!DOCTYPE html>
 <html>
-<head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>Сигнализация за наличие на поленови алергени във въздуха</title>
-<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1.0">
 <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-<link rel="icon" href="favicon.ico" type="image/x-icon">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-
-
-<script src="mqttws31.js" type="text/javascript"></script>
-<style>
-* {
-  box-sizing: border-box;
-}
-
-body {
-  background: rgb(255, 153, 0);
-}
-
-.box {
-  background: white;
-  width: 80%;
-  margin: 2.5rem auto; 
-/*   height: 30rem; */
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
  
-}
+ <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<head>
+  <title>Сигнализация за наличие на поленови алергени във въздуха</title>
+  <script src="paho-mqtt.js"></script>
+  <script src="util.js"></script>
+   <style>
 
-.box h3 {
-  font-family: "Kaushan Script", sans-serif;
-  font-size: 18px;
-  font-weight: normal;
-  margin-left: 35px;
-  margin-bottom: 20px;
-  padding-top: 40px;
-  color: #ff6600;
-}
+h2 {text-align: center;}
 p {
 color: #666699;
 font-family: "Kaushan Script", sans-serif;
   font-size: 14px;
 }
-.date a {
-  color: #9E9E9E;
-  float: right;
-  margin-right: 40px;
-  font-size: 14px;
-  text-decoration: none;
-  line-height: 48px;
-  font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
+div {text-align: center;}
+
+body {
+background: linear-gradient(90deg,#afd9f7,#f0f2ff);
+background: -webkit-linear-gradient(90deg,#afd9f7,#f0f2ff);
 }
-
-
-.fa-caret-down {
-  padding-left: 5px;
+.hidden {
+  opacity:0;
 }
-
-#chart {
-  width: 100%;
-  height: 80%;
+.console-container {
+ 
+  font-family:Khula;
+  font-size:14px;
+  text-align:center;
+  text-transform: uppercase;
+  height:600px;
+  width:850px;
+  display:block;
+  position:absolute;
+  color:#2b588b;
+  top:250px;
+  bottom:0;
+  left:0;
+  right:0;
+  margin:auto;
 }
-
-#chart > div {
-  width: 100%!important;
+.console-underscore {
+   display:inline-block;
+  position:relative;
+  top:-0.14em;
+  left:10px;
 }
 .modal {
   display: none; /* Hidden by default */
@@ -103,10 +89,11 @@ font-family: "Kaushan Script", sans-serif;
 .button {
   background-color: transparent;
   border: none;
-  color: black;
+  color: #2b588b;
   padding: 15px 32px;
   text-align: center;
   text-decoration: none;
+  text-transform: uppercase;
   display: inline-block;
   font-size: 24px;
   font-weight: bold;
@@ -150,175 +137,43 @@ a:active {
     transform: rotate(90deg);
   }
 </style>
-<script type="text/javascript">
-/*
-by @bordignon on twitter
-Feb 2014
-Simple example of plotting live mqtt/websockets data using highcharts.
-public broker and topic you can use for testing.
-	var MQTTbroker = 'broker.mqttdashboard.com';
-	var MQTTport = 8000;
-	var MQTTsubTopic = 'dcsquare/cubes/#'; //works with wildcard # and + topics dynamically now
-*/
-//settings BEGIN
-	var MQTTbroker = 'co2.quest';
-	var MQTTport = 9393;
-	var MQTTsubTopic = 'vt/dd'; //works with wildcard # and + topics dynamically now
-	var MQTTsubTopic1 = 'sf/dd';
-//settings END
-	var chart; // global variuable for chart
-	var dataTopics = new Array();
-//mqtt broker
-	var client = new Paho.MQTT.Client(MQTTbroker, MQTTport,
-				"myclientid_" + parseInt(Math.random() * 100, 10));
-	client.onMessageArrived = onMessageArrived;
-	client.onConnectionLost = onConnectionLost;
-	//connect to broker is at the bottom of the init() function !!!!
-
-//mqtt connecton options including the mqtt broker subscriptions
-	var options = {
-		timeout: 3,
-		onSuccess: function () {
-			console.log("mqtt connected");
-			// Connection succeeded; subscribe to our topics
-			client.subscribe(MQTTsubTopic, {qos: 1});
-			client.subscribe(MQTTsubTopic1, {qos: 1});
-		},
-		onFailure: function (message) {
-			console.log("Connection failed, ERROR: " + message.errorMessage);
-			//window.setTimeout(location.reload(),20000); //wait 20seconds before trying to connect again.
-		}
-	};
-//can be used to reconnect on connection lost
-	function onConnectionLost(responseObject) {
-		console.log("connection lost: " + responseObject.errorMessage);
-		//window.setTimeout(location.reload(),20000); //wait 20seconds before trying to connect again.
-	};
-//what is done when a message arrives from the broker
-	function onMessageArrived(message) {
-		console.log(message.destinationName, '',message.payloadString);
-		//check if it is a new topic, if not add it to the array
-		if (dataTopics.indexOf(message.destinationName) < 0){
-
-		    dataTopics.push(message.destinationName); //add new topic to array
-		    var y = dataTopics.indexOf(message.destinationName); //get the index no
-
-		    //create new data series for the chart
-			var newseries = {
-		            id: y,
-		            name: message.destinationName,
-		            data: []
-		            };
-			chart.addSeries(newseries); //add the series
-
-		    };
-
-		var y = dataTopics.indexOf(message.destinationName); //get the index no of the topic from the array
-		var myEpoch = new Date().getTime(); //get current epoch time
-		var thenum = message.payloadString.replace( /^\D+/g, ''); //remove any text spaces from the message
-		var plotMqtt = [myEpoch, Number(thenum)]; //create the array
-		if (isNumber(thenum)) { //check if it is a real number and not text
-			console.log('is a propper number, will send to chart.')
-			plot(plotMqtt, y);	//send it to the plot function
-		};
-	};
-//check if a real number
-	function isNumber(n) {
-	  return !isNaN(parseFloat(n)) && isFinite(n);
-	};
-//function that is called once the document has loaded
-	function init() {
-		//i find i have to set this to false if i have trouble with timezones.
-		Highcharts.setOptions({
-			global: {
-				useUTC: false
-			}
-		});
-		// Connect to MQTT broker
-		client.connect(options);
-	};
-//this adds the plots to the chart
-    function plot(point, chartno) {
-    	console.log(point);
-
-	        var series = chart.series[0],
-	            shift = series.data.length > 20; // shift if the series is
-	                                             // longer than 20
-	        // add the point
-	        chart.series[chartno].addPoint(point, true, shift);
-	};
-//settings for the chart
-	$(document).ready(function() {
-	    chart = new Highcharts.Chart({
-	        chart: {
-	            renderTo: 'chart',
-	            defaultSeriesType: 'spline'
-	        },
-	        title: {
-	            text: 'Сигнализация за наличие на поленови алергени във въздуха'
-	        },
-	        
-	        xAxis: {
-	            type: 'datetime',
-	            tickPixelInterval: 150,
-	            maxZoom: 20 * 1000
-	        },
-	        yAxis: {
-	            minPadding: 0.2,
-	            maxPadding: 0.2,
-	            title: {
-	                text: 'Ден Градуси',
-	                margin: 80
-	            },
-	              labels: {
-            style: {
-                color: 'blue',
-                fontSize:12,
-                
-            }
-        }
-	        },
-	        
-	          plotOptions: {
-        series: {
-            marker: {
-               enabled: true,
-            symbol: 'circle',
-            radius: 6
-            }
-        }
-    },
-	         exporting: {
-    enabled: false
-  },
-	        series: []
-	    });
-	});
-</script>
-
-<script src="http://code.highcharts.com/stock/highstock.js"></script>
-<script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
-
 </head>
 <body>
-<body onload="init();">
-<div class="box" style="height: 500px; min-width: 500px">
-
+<div class='console-container'><span id='text'></span><div class='console-underscore' id='console'></div>
 <button id="myBtn" class="button">Инфо</button>
 <div id="myModal" class="modal">
 
   <!-- Modal content -->
   <div class="modal-content">
     <span class="close">&times;</span>
-    <p align="justify">Полинозата, алергията към полена отделян от растенията е алергично заболяване засягащо дихателните пътища и очите. Регистрирани са 15 вида алергени от видове полени. Заболяването е широко разпространено в България, като по оценки от него страда до 20% от населението в пролетно-летния сезон. Настоящият проект представлява иновативна система за ранно уведомяване и прогнозиране за наличието на поленови алергени във въздуха базирана върху метода на сумата на ефективните температури с цел с покритие територията на град Велико Търново и три съседни общини (Горна Оряховица, Лясковец и Дряново, следете топика vt/dd) и град София (топика sf/dd) насочена към страдащи от поленова алергия в района. Използвайте скалата от тази страница и показанията в реално време за да се подготвите и предпазите, ако страдате от алергия към полени. В сайта прилагаме метода на изчисляване на сума на ефективните температури и на негова основа точно до под 48 часа отклонение, можем да определим фенологията на поленоотделящите растения. Можете да получавате данните всеки ден следвайки този <a href="https://twitter.com/geovisio" target="_blank">twitter акаунт</a></p>
+    <p align="justify">Полинозата, алергията към полена отделян от растенията е алергично заболяване засягащо дихателните пътища и очите. Регистрирани са 15 вида алергени от видове полени. Заболяването е широко разпространено в България, като по оценки от него страда до 20% от населението в пролетно-летния сезон. Настоящият проект представлява иновативна система за ранно уведомяване и прогнозиране за наличието на поленови алергени във въздуха базирана върху метода на сумата на ефективните температури с цел с покритие територията на град Велико Търново и три съседни общини (Горна Оряховица, Лясковец и Дряново) и град София насочена към страдащи от поленова алергия в района. Използвайте скалата от тази страница и показанията в реално време за да се подготвите и предпазите, ако страдате от алергия към полени. В сайта прилагаме метода на изчисляване на сума на ефективните температури и на негова основа точно до под 48 часа отклонение, можем да определим фенологията на поленоотделящите растения. Можете да получавате данните всеки ден следвайки този <a href="https://twitter.com/geovisio" target="_blank">twitter акаунт</a></p>
   </div>
 
 </div>
- <h3 align="center" ><b>70-80: топола, бреза  | 180-200:  иглолистни | 400: житни | 600: други плевели | 645 - 690: липа</b></h3>
-  <div id="chart"></div>
-</div>
+
+<p align="center" ><b>70-80: топола, бреза  | 180-200:  иглолистни | 400: житни | 600: други плевели | 645 - 690: липа</b></h3><h2><b>Сигнализация за наличие на поленови алергени във въздуха</b></p>
+
+<b><p id="demo" style="color:#2b588b;"></b></p>
+<p id="demo1" style="color:#2b588b; "><b></b></p></div>
 </body>
 </html>
+<script>
+// Create a client instance
+var client = new Paho.Client(mqtt.hostname, Number(mqtt.port), "sub-client-id");
+// set callback handlers
+client.onConnectionLost = onConnectionLost;
+client.onMessageArrived = onMessageArrived;
+// connect the client
+console.log("attempting to connect...")
+client.connect({onSuccess:onConnect, useSSL: true});
+// called when the client connects
+function onConnect() {
+  // Once a connection has been made, make a subscription and send a message.
+  console.log("onConnect");
+  client.subscribe(topic_name,{qos: 0});
+  client.subscribe(topic1_name,{qos: 1});
+}
+</script>
 <script>
 // Get the modal
 var modal = document.getElementById("myModal");
