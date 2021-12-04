@@ -5,44 +5,62 @@
 <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 <link rel="icon" href="favicon.ico" type="image/x-icon">
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-<script src="mqttws31.js" type="text/javascript"></script>
- <style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 
-h2 {text-align: center;}
+
+<script src="mqttws31.js" type="text/javascript"></script>
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: rgb(150,225,250);
+}
+
+.box {
+  background: white;
+  width: 80%;
+  margin: 2.5rem auto; 
+/*   height: 30rem; */
+  box-shadow: 0px 50px 80px -20px rgba(80,180,220,0.7),0 20px 30px 10px rgba(80,180,220,0.2),0 0px 80px 60px rgba(80,180,220,0.2);
+}
+
+.box h3 {
+  font-family: "Kaushan Script", sans-serif;
+  font-size: 22px;
+  font-weight: normal;
+  margin-left: 35px;
+  margin-bottom: 20px;
+  padding-top: 40px;
+}
 p {
 color: #2596be;
+font-family: "Kaushan Script", sans-serif;
+  font-size: 14px;
 }
-div {text-align: center;}
+.date a {
+  color: #9E9E9E;
+  float: right;
+  margin-right: 40px;
+  font-size: 14px;
+  text-decoration: none;
+  line-height: 48px;
+  font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
+}
 
-body{
- background-image: url('pl.jpg');
-   background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-position: center; 
- }
-.console-container {
- 
-  font-family:Khula;
-  font-size:14px;
-  text-align:center;
-  text-transform: uppercase;
-  height:600px;
-  width:600px;
-  display:block;
-  position:absolute;
-  color:#2b588b;
-  top:0;
-  bottom:0;
-  left:0;
-  right:0;
-  margin:auto;
+
+.fa-caret-down {
+  padding-left: 5px;
 }
-.console-underscore {
-   display:inline-block;
-  position:relative;
-  top:-0.14em;
-  left:10px;
+
+#chart {
+  width: 100%;
+  height: 80%;
+}
+
+#chart > div {
+  width: 100%!important;
 }
 .modal {
   display: none; /* Hidden by default */
@@ -83,7 +101,7 @@ body{
 .button {
   background-color: transparent;
   border: none;
-  color: white;
+  color: black;
   padding: 15px 32px;
   text-align: center;
   text-decoration: none;
@@ -124,41 +142,9 @@ a:hover {
 a:active {
   color: blue;
 }
-.highcharts-color-0 {
-    fill: #7cb5ec;
-    stroke: #7cb5ec;
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.highcharts-axis.highcharts-color-0 .highcharts-axis-line {
-    stroke: #7cb5ec;
-}
-.highcharts-axis.highcharts-color-0 text {
-    fill: #7cb5ec;
-    font-size: 16px;
-    font-weight: bold;
-}
-.highcharts-color-1 {
-    fill: #90ed7d;
-    stroke: #90ed7d;
-}
-.highcharts-axis.highcharts-color-1 .highcharts-axis-line {
-    stroke: #90ed7d;
-}
-
-.highcharts-axis.highcharts-color-1 text {
-    fill: #90ed7d;
-}
-
-.highcharts-yaxis .highcharts-axis-line {
-    stroke-width: 2px;
-}
-
-@media only screen and (orientation:portrait) {
-  body {
-    height: 100vw;
-    transform: rotate(90deg);
+@media screen and (max-width: 39rem) {
+  .date {
+    display: inline-block;
   }
 }
 </style>
@@ -166,34 +152,26 @@ a:active {
 /*
 by @bordignon on twitter
 Feb 2014
-
 Simple example of plotting live mqtt/websockets data using highcharts.
-
 public broker and topic you can use for testing.
-
 	var MQTTbroker = 'broker.mqttdashboard.com';
 	var MQTTport = 8000;
 	var MQTTsubTopic = 'dcsquare/cubes/#'; //works with wildcard # and + topics dynamically now
-
 */
-
 //settings BEGIN
 	var MQTTbroker = 'co2.quest';
 	var MQTTport = 9393;
 	var MQTTsubTopic = 'vt/dd'; //works with wildcard # and + topics dynamically now
 	var MQTTsubTopic1 = 'sf/dd';
 //settings END
-
 	var chart; // global variuable for chart
 	var dataTopics = new Array();
-
-//mqtt broker 
+//mqtt broker
 	var client = new Paho.MQTT.Client(MQTTbroker, MQTTport,
 				"myclientid_" + parseInt(Math.random() * 100, 10));
 	client.onMessageArrived = onMessageArrived;
 	client.onConnectionLost = onConnectionLost;
 	//connect to broker is at the bottom of the init() function !!!!
-	
 
 //mqtt connecton options including the mqtt broker subscriptions
 	var options = {
@@ -209,34 +187,30 @@ public broker and topic you can use for testing.
 			//window.setTimeout(location.reload(),20000); //wait 20seconds before trying to connect again.
 		}
 	};
-
 //can be used to reconnect on connection lost
 	function onConnectionLost(responseObject) {
 		console.log("connection lost: " + responseObject.errorMessage);
 		//window.setTimeout(location.reload(),20000); //wait 20seconds before trying to connect again.
 	};
-
 //what is done when a message arrives from the broker
 	function onMessageArrived(message) {
 		console.log(message.destinationName, '',message.payloadString);
-
 		//check if it is a new topic, if not add it to the array
 		if (dataTopics.indexOf(message.destinationName) < 0){
-		    
+
 		    dataTopics.push(message.destinationName); //add new topic to array
 		    var y = dataTopics.indexOf(message.destinationName); //get the index no
-		    
+
 		    //create new data series for the chart
 			var newseries = {
 		            id: y,
 		            name: message.destinationName,
 		            data: []
 		            };
-
 			chart.addSeries(newseries); //add the series
-		    
+
 		    };
-		 
+
 		var y = dataTopics.indexOf(message.destinationName); //get the index no of the topic from the array
 		var myEpoch = new Date().getTime(); //get current epoch time
 		var thenum = message.payloadString.replace( /^\D+/g, ''); //remove any text spaces from the message
@@ -246,106 +220,68 @@ public broker and topic you can use for testing.
 			plot(plotMqtt, y);	//send it to the plot function
 		};
 	};
-
-//check if a real number	
+//check if a real number
 	function isNumber(n) {
 	  return !isNaN(parseFloat(n)) && isFinite(n);
 	};
-
 //function that is called once the document has loaded
 	function init() {
-
 		//i find i have to set this to false if i have trouble with timezones.
 		Highcharts.setOptions({
 			global: {
 				useUTC: false
 			}
 		});
-
 		// Connect to MQTT broker
 		client.connect(options);
-
 	};
-
-
-//this adds the plots to the chart	
+//this adds the plots to the chart
     function plot(point, chartno) {
     	console.log(point);
-    	
+
 	        var series = chart.series[0],
-	            shift = series.data.length > 20; // shift if the series is 
+	            shift = series.data.length > 20; // shift if the series is
 	                                             // longer than 20
 	        // add the point
-	        chart.series[chartno].addPoint(point, true, shift);  
-
+	        chart.series[chartno].addPoint(point, true, shift);
 	};
-
 //settings for the chart
 	$(document).ready(function() {
 	    chart = new Highcharts.Chart({
 	        chart: {
-	            renderTo: 'container',
-	            backgroundColor:'rgba(255, 255, 255, 0)',
-	            opacity: 0.5,
+	            renderTo: 'chart',
 	            defaultSeriesType: 'spline'
 	        },
 	        title: {
-	            text: 'Сигнализация за наличие на поленови алергени във въздуха',
-	            style: {
-	            color: '#FFFFFF',
-            fontWeight: 'bold'
-            }
+	            text: 'Сигнализация за наличие на поленови алергени във въздуха'
 	        },
 	        
 	        xAxis: {
 	            type: 'datetime',
 	            tickPixelInterval: 150,
-	            maxZoom: 20 * 1000,
-	            lineColor: '#FF0000',
-	            className: 'highcharts-color-1',
-	            labels: {
-            style: {
-                color: '#FFFFFF',
-                fontSize:16
-            }
-        }
+	            maxZoom: 20 * 1000
 	        },
 	        yAxis: {
 	            minPadding: 0.2,
 	            maxPadding: 0.2,
-	            lineColor: '#FF0000',
-	            className: 'highcharts-color-0',
 	            title: {
 	                text: 'Ден Градуси',
-	                margin: 80,
-	               color: '#FFFFFF',
-	                fontSize:18
+	                margin: 80
 	            },
-	             labels: {
+	              labels: {
             style: {
                 color: 'blue',
-                fontSize:18,
+                fontSize:12,
                 
             }
         }
-	           
 	        },
-		      plotOptions: {
-        series: {
-            marker: {
-               enabled: true,
-            symbol: 'circle',
-            radius: 8
-            }
-        }
-    },
-     exporting: {
+	         exporting: {
     enabled: false
   },
 	        series: []
-	    });        
+	    });
 	});
-
 </script>
 
 <script src="http://code.highcharts.com/stock/highstock.js"></script>
@@ -353,10 +289,10 @@ public broker and topic you can use for testing.
 
 </head>
 <body>
-<body onload="init();"><!--Start the javascript ball rolling and connect to the mqtt broker-->
+<body onload="init();">
+<div class="box">
 
 <button id="myBtn" class="button">Инфо</button>
-<!-- The Modal -->
 <div id="myModal" class="modal">
 
   <!-- Modal content -->
@@ -366,11 +302,10 @@ public broker and topic you can use for testing.
   </div>
 
 </div>
-
-<div id="container" style="height: 450px; min-width: 450px"></div><!-- this the placeholder for the chart-->
-<p align="center" style="color:white;"><b>0-50: безопасно  | 50-65:  засилено внимание | 65-90: опасно</b></p>
-
-	</body>
+ <h3 align="center" style="color:black;"><b>0-50: безопасно  | 50-65:  засилено внимание | 65-90: опасно</b></h3>
+  <div id="chart"></div>
+</div>
+</body>
 </html>
 <script>
 // Get the modal
