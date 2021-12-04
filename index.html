@@ -10,19 +10,18 @@
   <title>Сигнализация за наличие на поленови алергени във въздуха</title>
   <script src="paho-mqtt.js"></script>
   <script src="util.js"></script>
-   <style>
+   
+
+  <style>
 
 h2 {text-align: center;}
-p {
-color: #666699;
-font-family: "Kaushan Script", sans-serif;
-  font-size: 14px;
-}
+
 div {text-align: center;}
 
 body {
-background: linear-gradient(90deg,#afd9f7,#f0f2ff);
-background: -webkit-linear-gradient(90deg,#afd9f7,#f0f2ff);
+  background:   #dbff33;
+  background-image: url("cool-background.png");
+ 
 }
 .hidden {
   opacity:0;
@@ -33,12 +32,12 @@ background: -webkit-linear-gradient(90deg,#afd9f7,#f0f2ff);
   font-size:14px;
   text-align:center;
   text-transform: uppercase;
-  height:600px;
-  width:850px;
+  height:400px;
+  width:600px;
   display:block;
   position:absolute;
-  color:#2b588b;
-  top:250px;
+  color:white;
+  top:0;
   bottom:0;
   left:0;
   right:0;
@@ -50,113 +49,27 @@ background: -webkit-linear-gradient(90deg,#afd9f7,#f0f2ff);
   top:-0.14em;
   left:10px;
 }
-.modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  padding-top: 100px; /* Location of the box */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
-/* Modal Content */
-.modal-content {
-  background-color: #fefefe;
-  margin: auto;
-  align-content: justify;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-}
-/* The Close Button */
-.close {
-  color: #aaaaaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
 
-.close:hover,
-.close:focus {
-  color: #000;
-  text-decoration: none;
-  cursor: pointer;
-}
-.button {
-  background-color: transparent;
-  border: none;
-  color: #2b588b;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  text-transform: uppercase;
-  display: inline-block;
-  font-size: 24px;
-  font-weight: bold;
-}
-a:link {
-  text-decoration: none;
-}
-
-a:visited {
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-a:active {
-  text-decoration: underline;
-}
-a:link {
-  color: red;
-}
-
-/* visited link */
-a:visited {
-  color: green;
-}
-
-/* mouse over link */
-a:hover {
-  color: hotpink;
-}
-
-/* selected link */
-a:active {
-  color: blue;
-}
 @media only screen and (orientation:portrait) {
   body {
     height: 100vw;
     transform: rotate(90deg);
   }
 }
-
 </style>
 </head>
+</head>
 <body>
-<div class='console-container'><span id='text'></span><div class='console-underscore' id='console'></div>
-<button id="myBtn" class="button">Инфо</button>
-<div id="myModal" class="modal">
 
-  <!-- Modal content -->
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <p align="justify">Полинозата, алергията към полена отделян от растенията е алергично заболяване засягащо дихателните пътища и очите. Регистрирани са 15 вида алергени от видове полени. Заболяването е широко разпространено в България, като по оценки от него страда до 20% от населението в пролетно-летния сезон. Настоящият проект представлява иновативна система за ранно уведомяване и прогнозиране за наличието на поленови алергени във въздуха базирана върху метода на сумата на ефективните температури с цел с покритие територията на град Велико Търново и три съседни общини (Горна Оряховица, Лясковец и Дряново) и град София насочена към страдащи от поленова алергия в района. Използвайте скалата от тази страница и показанията в реално време за да се подготвите и предпазите, ако страдате от алергия към полени. В сайта прилагаме метода на изчисляване на сума на ефективните температури и на негова основа точно до под 48 часа отклонение, можем да определим фенологията на поленоотделящите растения. Можете да получавате данните всеки ден следвайки този <a href="https://twitter.com/geovisio" target="_blank">twitter акаунт</a></p>
-  </div>
 
-</div>
+<div class='console-container'><span id='text'></span><div class='console-underscore' id='console'>&#95;</div>
+<p align="center" style="font-size:12px;"><b>80: топола, бреза  | 200:  иглолистни | 400: житни | 690: липа</b>
 
-<p align="center" ><b>70-80: топола, бреза  | 180-200:  иглолистни | 400: житни | 600: други плевели | 645 - 690: липа</b></h3><h2><b>Сигнализация за наличие на поленови алергени във въздуха</b></p>
+<h2><b>Сигнализация за наличие на поленови алергени във въздуха</b></h2>
 
-<b><p id="demo" style="color:#2b588b;"></b></p>
-<p id="demo1" style="color:#2b588b; "><b></b></p></div>
+<b><p id="demo" style="color:white;"></p></b>
+<b><p id="demo1" style="color:white; "><b></p></b>
+
 </body>
 </html>
 <script>
