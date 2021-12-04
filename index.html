@@ -131,9 +131,11 @@ a:hover {
 a:active {
   color: blue;
 }
-    @media screen and (orientation:portrait) and
-(min-device-width: 320px) and (max-device-width: 450px) {
-   /* Input Styles */
+@media only screen and (orientation:portrait) {
+  body {
+    height: 100vw;
+    transform: rotate(90deg);
+  }
 }
 
 </style>
