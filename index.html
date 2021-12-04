@@ -83,10 +83,12 @@ a:hover {
 a:active {
   color: blue;
 }
-@media screen and (max-width: 540px) and (orientation:portrait) {
-    .view {
-        width: 400px;
-    }
+@media only screen and (orientation:portrait) {
+  body {
+    height: 100vw;
+ width: 100%;
+    transform: rotate(90deg);
+  }
 }
 
 </style>
