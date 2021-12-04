@@ -15,7 +15,7 @@
 }
 
 body {
-  background: rgb(150,225,250);
+  background: rgb(255, 153, 0);
 }
 
 .box {
@@ -23,7 +23,7 @@ body {
   width: 80%;
   margin: 2.5rem auto; 
 /*   height: 30rem; */
-  box-shadow: 0px 50px 80px -20px rgba(80,180,220,0.7),0 20px 30px 10px rgba(80,180,220,0.2),0 0px 80px 60px rgba(80,180,220,0.2);
+ 
 }
 
 .box h3 {
@@ -33,7 +33,7 @@ body {
   margin-left: 35px;
   margin-bottom: 20px;
   padding-top: 40px;
-  color: #666699;
+  color: #ff6600;
 }
 p {
 color: #666699;
@@ -277,6 +277,16 @@ public broker and topic you can use for testing.
             }
         }
 	        },
+	        
+	          plotOptions: {
+        series: {
+            marker: {
+               enabled: true,
+            symbol: 'circle',
+            radius: 8
+            }
+        }
+    },
 	         exporting: {
     enabled: false
   },
