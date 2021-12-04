@@ -2,7 +2,7 @@
 <html>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0" />
  
  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 <link rel="icon" href="favicon.ico" type="image/x-icon">
@@ -17,13 +17,12 @@
 h2 {text-align: center;}
 
 div {text-align: center;}
- body {
-  
-   background:   #dbff33;
+
+body {
+  background:   #dbff33;
   background-image: url("cool-background.png");
+ 
 }
-
-
 .hidden {
   opacity:0;
 }
@@ -84,12 +83,17 @@ a:hover {
 a:active {
   color: blue;
 }
+@media only screen and (orientation:portrait) {
+  body {
+    height: 100vw;
+    transform: rotate(90deg);
+  }
+}
 @media (min-width: 481px) and (max-width: 767px) {
   
   /* CSS */
   
 }
-
 </style>
 </head>
 </head>
