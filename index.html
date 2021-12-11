@@ -54,7 +54,56 @@ body {
   top:-0.14em;
   left:10px;
 }
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+/* Modal Content */
+.modal-content {
+font-family:Khula;
+  background-color: #fefefe;
+  margin: auto;
+  align-content: justify;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
 
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+.button {
+  background-color: transparent;
+  border: none;
+  color: #ffffff;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  display: inline-block;
+  font-size: 18px;
+  font-weight: bold;
+  font-family:Khula;
+}
 a:link {
   text-decoration: none;
 }
@@ -114,7 +163,16 @@ a:active {
 <b><p id="demo" style="color:white;"></p></b>
 <b><p id="demo1" style="color:white; "><b></p></b>
 <b><p style="color:white; "><a href="https://twitter.com/geovisio" target="_blank">следвайте ни и в twitter</a></p></p></b>
+<button id="myBtn" class="button">Инфо</button>
+<div id="myModal" class="modal">
 
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <p align="justify" style="color:black; ">Полинозата, алергията към полена отделян от растенията е алергично заболяване засягащо дихателните пътища и очите. Регистрирани са 15 вида алергени от видове полени. Заболяването е широко разпространено в България, като по оценки от него страда до 20% от населението в пролетно-летния сезон. Настоящият проект представлява иновативна система за ранно уведомяване и прогнозиране за наличието на поленови алергени във въздуха базирана върху метода на сумата на ефективните температури с цел с покритие територията на град Велико Търново и три съседни общини (Горна Оряховица, Лясковец и Дряново) и град София насочена към страдащи от поленова алергия в района. Използвайте скалата от тази страница и показанията в реално време за да се подготвите и предпазите, ако страдате от алергия към полени. В сайта прилагаме метода на изчисляване на сума на ефективните температури и на негова основа точно до под 48 часа отклонение, можем да определим фенологията на поленоотделящите растения. </p>
+  </div>
+
+</div>
 </body>
 </html>
 <script>
@@ -132,6 +190,33 @@ function onConnect() {
   console.log("onConnect");
   client.subscribe(topic_name,{qos: 0});
   client.subscribe(topic1_name,{qos: 1});
+}
+</script>
+<script>
+// Get the modal
+var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal 
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
 }
 </script>
 <script>
