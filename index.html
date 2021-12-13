@@ -162,6 +162,7 @@ a:active {
 
 <b><p id="demo" style="color:white;"></p></b>
 <b><p id="demo1" style="color:white; "><b></p></b>
+   <b><p id="demo2" style="color:white; "><b></p></b>
 <b><p style="color:white; "><a href="https://twitter.com/geovisio" target="_blank">следвайте ни и в twitter</a></p></p></b>
 <button id="myBtn" class="button">Инфо</button>
 <div id="myModal" class="modal">
@@ -190,6 +191,7 @@ function onConnect() {
   console.log("onConnect");
   client.subscribe(topic_name,{qos: 0});
   client.subscribe(topic1_name,{qos: 1});
+   client.subscribe(topic2_name,{qos: 1});
 }
 </script>
 <script>
