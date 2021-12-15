@@ -1,118 +1,73 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-
-<title>Сигнализация за наличие на поленови алергени във въздуха</title>		
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-
-		<!-- Favicon -->
-		<link rel="icon" href="favicon.ico" type="image/x-icon" />
-<script src="paho-mqtt.js"></script>
+   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+ 
+ <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<head>
+  <title>Сигнализация за наличие на поленови алергени във въздуха</title>
+  <script src="paho-mqtt.js"></script>
   <script src="util.js"></script>
    
-		<!-- Invoice styling -->
-		<style>
-			
-			body {
-				font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
-				text-align: center;
-				color: #777;
-				
-			}
 
-			body h1 {
-				font-weight: 300;
-				margin-bottom: 0px;
-				padding-bottom: 0px;
-				color: #000;
-				
-			}
+  <style>
 
-			body h3 {
-				font-weight: 300;
-				margin-top: 10px;
-				margin-bottom: 20px;
-				font-style: italic;
-				color: #555;
-				
-			}
+h2 {text-align: center;}
 
-			body a {
-				color: #06f;
-			}
+div {text-align: center;}
+table, th, td {
+  border: 2px solid white;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+}
+th {
+  text-align: center;
+}
+body {
 
-			.invoice-box {
-				max-width: 800px;
-				margin: auto;
-				padding: 30px;
-				border: 1px solid #eee;
-				box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-				font-size: 16px;
-				line-height: 24px;
-				font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
-				color: #555;
-			}
+ 
+  background-image: url("b.jpg");
+  background-repeat: no-repeat;
+    background-size: 100% 100%;
+   background-attachment: fixed; 
 
-			.invoice-box table {
-				width: 100%;
-				line-height: inherit;
-				text-align: left;
-				border-collapse: collapse;
-				
-			}
-
-			.invoice-box table td {
-				padding: 5px;
-				vertical-align: top;
-			}
-
-			.invoice-box table tr td:nth-child(2) {
-				text-align: right;
-			}
-
-			.invoice-box table tr.top table td {
-				padding-bottom: 20px;
-			}
-
-			.invoice-box table tr.top table td.title {
-				font-size: 45px;
-				line-height: 45px;
-				color: #333;
-			}
-
-			.invoice-box table tr.information table td {
-				padding-bottom: 40px;
-			}
-
-			.invoice-box table tr.heading td {
-				background: #eee;
-				border-bottom: 1px solid #ddd;
-				font-weight: bold;
-			}
-
-			.invoice-box table tr.details td {
-				padding-bottom: 20px;
-			}
-
-			.invoice-box table tr.item td {
-				border-bottom: 1px solid #eee;
-			}
-
-			.invoice-box table tr.item.last td {
-				border-bottom: none;
-			}
-
-			.invoice-box table tr.total td:nth-child(2) {
-				border-top: 2px solid #eee;
-				font-weight: bold;
-			}
-			.modal {
+ 
+}
+.hidden {
+  opacity:0;
+}
+.console-container {
+ 
+  font-family:Khula;
+  font-size:14px;
+  text-align:center;
+  text-transform: uppercase;
+  height:400px;
+  width:700px;
+  display:block;
+  position:absolute;
+  color:white;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;
+  margin:auto;
+}
+.console-underscore {
+   display:inline-block;
+  position:relative;
+  top:-0.14em;
+  left:10px;
+}
+.modal {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
-  padding-top: 12px; /* Location of the box */
+  padding-top: 100px; /* Location of the box */
   left: 0;
   top: 0;
   width: 100%; /* Full width */
@@ -148,7 +103,7 @@ font-family:Khula;
 .button {
   background-color: transparent;
   border: none;
-  color: #555;
+  color: #ffffff;
   padding: 15px 32px;
   text-align: center;
   text-decoration: none;
@@ -156,7 +111,7 @@ font-family:Khula;
   display: inline-block;
   font-size: 18px;
   font-weight: bold;
-  font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+  font-family:Khula;
 }
 a:link {
   text-decoration: none;
@@ -174,12 +129,12 @@ a:active {
   text-decoration: underline;
 }
 a:link {
-  color: #346b43;
+  color: white;
 }
 
 /* visited link */
 a:visited {
-  color: #346b43;
+  color: white;
 }
 
 /* mouse over link */
@@ -191,78 +146,54 @@ a:hover {
 a:active {
   color: blue;
 }
-			@media only screen and (max-width: 600px) {
-				.invoice-box table tr.top table td {
-					width: 100%;
-					display: block;
-					text-align: center;
-				}
+@media only screen and (orientation:portrait) {
+  body {
+    height: 100vw;
+    transform: rotate(90deg);
+  }
+}
+@media (min-width: 481px) and (max-width: 767px) {
+  
+  /* CSS */
+  
+}
+</style>
+</head>
+</head>
+<body>
 
-				.invoice-box table tr.information table td {
-					width: 100%;
-					display: block;
-					text-align: center;
-				}
-			}
-		</style>
-	</head>
+<button id="myBtn" class="button">Инфо</button>
+<div class='console-container'><span id='text'></span><div class='console-underscore' id='console'>&#95;</div>
 
-	<body>
-		<br /><br /><br />
+<p align="center" style="font-size:12px;"><b>80: топола, бреза  | 200:  иглолистни | 400: житни | 690: липа</b></p>
 
-		<div class="invoice-box">
-			<table>
-				<tr class="top">
-					<td colspan="2">
-						<table>
-							<tr>
-								<td class="title">
-									<img src="logo.png" alt="Company logo" style="width: 100%; max-width: 300px" />
-								</td>
+<h2><b>температурна сума за поленообрауване</b></h2>
+<table style="width:100%">
+  <tr>
+    <th>Велико Търново</th>
+    <th>София</th>
+   <th>Пловдив</th>
+  </tr>
+    <tr>
+    <td><p id="demo" style="color:white;"></p></td>
+    <td><p id="demo1" style="color:white; "><b></p></td>
+   <td><p id="demo2" style="color:white; "><b></p></td>
+  </tr>
+  
+</table>
 
-								<td>
-								<button style="color:#346b43;" id="myBtn" class="button" >Инфо</button><br />
-									<b><a href="https://twitter.com/geovisio" target="_blank">Следвайте ни и в Twitter</a></b><br />
-									
-								
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
+<b><p style="color:white; "><a href="https://twitter.com/geovisio" target="_blank">получавайте информацията в twitter</a></p></p></b>
 
-				<tr class="information">
-					<td colspan="2">
-						<table>
-							
-						
-							
-							
-				</tr>
-
-				<tr class="heading">
-					<p align="center" style="font-size:16px; color:#346b43;"><b>80: топола, бреза  | 200:  иглолистни | 400: житни | 690: липа</b></p>
-
-						<h2 align="center"><b>температурна сума за поленообрауване</b></h2>
-
-<b><p id="demo" style="color:#346b43;" align="center"></p></b>
-<b><p id="demo1" style="color:#346b43;" align="center"></p></b>
-<b><p id="demo2" style="color:#346b43;" align="center"></p></b>
-				</tr>
-
-			
-			</table>
-		</div>
-		<div id="myModal" class="modal">
+<div id="myModal" class="modal">
 
   <!-- Modal content -->
   <div class="modal-content">
     <span class="close">&times;</span>
-    <p align="justify" style="color:black; ">Полинозата, алергията към полена отделян от растенията е алергично заболяване засягащо дихателните пътища и очите.  Заболяването е широко разпространено в България, като по оценки от него страда до 20% от населението. Настоящият проект представлява иновативна система за ранно уведомяване и прогнозиране за наличието на поленови алергени във въздуха базирана върху метода на сумата на ефективните температури с цел с покритие територията на град Велико Търново и три съседни общини и град София и Пловдив насочена към страдащи от поленова алергия в района. Използвайте скалата от тази страница и показанията в реално време за да се подготвите и предпазите, ако страдате от алергия към полени. </p>
+    <p align="justify" style="color:black; ">Полинозата, алергията към полена отделян от растенията е алергично заболяване засягащо дихателните пътища и очите. Регистрирани са 15 вида алергени от видове полени. Заболяването е широко разпространено в България, като по оценки от него страда до 20% от населението в пролетно-летния сезон. Настоящият проект представлява иновативна система за ранно уведомяване и прогнозиране за наличието на поленови алергени във въздуха базирана върху метода на сумата на ефективните температури с цел с покритие територията на град Велико Търново и три съседни общини (Горна Оряховица, Лясковец и Дряново) и град София и Пловдив насочена към страдащи от поленова алергия в района. Използвайте скалата от тази страница и показанията в реално време за да се подготвите и предпазите, ако страдате от алергия към полени. В сайта прилагаме метода на изчисляване на сума на ефективните температури и на негова основа точно до под 48 часа отклонение, можем да определим фенологията на поленоотделящите растения. Ако имате въпроси, можете да се свържете с нас чрез <a href = "mailto: info@pollen.sbs">Email</a></p>
   </div>
 
 </div>
-	</body>
+</body>
 </html>
 <script>
 // Create a client instance
@@ -309,11 +240,30 @@ window.onclick = function(event) {
   }
 }
 </script>
-<script type="text/javascript">
-var sc_project=12689919; 
-var sc_invisible=1; 
-var sc_security="979b8c0a"; 
+<script>
+// Get the modal
+var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal 
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
 </script>
-<script type="text/javascript"
-src="https://www.statcounter.com/counter/counter.js"
-async></script>
