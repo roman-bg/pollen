@@ -13,17 +13,17 @@ function onConnectionLost(responseObject) {
 // called when a message arrives
 function onMessageArrived(message) { if(message.destinationName == "vt/dd")
 
-demo.innerHTML = " Велико Търново: "+message.payloadString;
+demo.innerHTML = "  "+message.payloadString;
 
-  console.log(" Велико Търново "+ message.payloadString);
+  console.log("  "+ message.payloadString);
   
     if(message.destinationName == "sf/dd")
-      demo1.innerHTML = " София: "+ message.payloadString;
-      console.log(" София "+ message.payloadString);
+      demo1.innerHTML = "  "+ message.payloadString;
+      console.log(" "+ message.payloadString);
   
      if(message.destinationName == "pl/dd")
-      demo2.innerHTML = " Пловдив: "+ message.payloadString;
-      console.log(" Пловдив "+ message.payloadString)
+      demo2.innerHTML = "  "+ message.payloadString;
+      console.log(" "+ message.payloadString)
 }
 
 
