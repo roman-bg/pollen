@@ -280,7 +280,6 @@ function onConnect() {
   // Once a connection has been made, make a subscription and send a message.
   console.log("onConnect");
   client.subscribe(topic_name,{qos: 0});
-  client.subscribe(topic1_name,{qos: 1});
    client.subscribe(topic2_name,{qos: 1});
 }
 </script>
