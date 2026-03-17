@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Бюлетин за алтернативни култури | Абонамент</title>
+    <!-- Префикс за модерен, изчистен дизайн; бяло и зелено, оптимизиран за мобилни устройства -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --white: #ffffff;
+            --off-white: #f8fbf8;
+            --green-light: #e2f0e2;
+            --green-primary: #2c6b2f;
+            --green-dark: #1d4a1f;
+            --green-soft: #5b8c5a;
+            --grey-text: #2e3b2e;
+            --shadow-sm: 0 10px 25px -5px rgba(0, 32, 0, 0.1), 0 8px 10px -6px rgba(0, 32, 0, 0.02);
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--off-white);
+            color: var(--grey-text);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* основни типове - подобрени за мобилни */
+        h1, h2, h3 {
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--green-dark);
+            line-height: 1.2;
+        }
+
+        h1 {
+            font-size: 2rem;
+            line-height: 1.2;
+            margin-bottom: 0.75rem;
+        }
+
+        h2 {
+            font-size: 1.7rem;
+            margin-bottom: 1rem;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: #2d3a2d;
+            font-size: 1rem;
+            text-align: justify;
+            text-justify: inter-word;
+        }
+
+        /* Специално за мобилни устройства, където двустранното подравняване може да създаде големи интервали */
+        @media (max-width: 480px) {
+            p {
+                text-align: left; /* На много малки екрани е по-четливо лявото подравняване */
+            }
+
+            /* За по-дълги параграфи запазваме двустранно само ако има достатъчно ширина */
+            .bulletin-highlight p, .feature-card p, .free-sample p {
+                text-align: justify;
+            }
+        }
+
+        /* За по-големи екрани - пълно двустранно подравняване */
+        @media (min-width: 768px) {
+            p {
+                text-align: justify;
+                text-justify: inter-word;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.2rem;
+        }
+
+        /* хедър - опростен за мобилни */
+        .site-header {
+            background-color: var(--white);
+            padding: 0.8rem 0;
+            border-bottom: 2px solid var(--green-light);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .leaf-icon {
+            background-color: var(--green-primary);
+            width: 36px;
+            height: 36px;
+            border-radius: 50% 50% 0 50%;
+            transform: rotate(45deg);
+            display: inline-block;
+            position: relative;
+        }
+
+        .logo-text {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--green-dark);
+        }
+
+        .logo-text span {
+            color: var(--green-primary);
+            font-weight: 400;
+        }
+
+        /* основен раздел – hero + бюлетин */
+        .hero {
+            padding: 2rem 0 1.5rem;
+        }
+
+        .hero-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .hero-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                align-items: center;
+                gap: 3rem;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background-color: var(--green-light);
+            color: var(--green-dark);
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 0.3rem 0.9rem;
+            border-radius: 40px;
+            margin-bottom: 1.2rem;
+            border: 1px solid rgba(44, 107, 47, 0.2);
+        }
+
+        .hero-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-highlight {
+            background: linear-gradient(120deg, rgba(226,240,226,0.4) 0%, rgba(226,240,226,0.8) 80%);
+            padding: 0.2rem 0.4rem;
+            border-radius: 6px;
+            color: var(--green-dark);
+        }
+
+        .feature-list {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+
+        .feature-list li {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 0.9rem;
+            align-items: flex-start;
+            font-size: 0.95rem;
+        }
+
+        .feature-list li::before {
+            content: "🌱";
+            font-size: 1.3rem;
+            line-height: 1;
+            color: var(--green-primary);
+            flex-shrink: 0;
+        }
+
+        /* карта с информация за бюлетина */
+        .bulletin-highlight {
+            background-color: var(--white);
+            border-radius: 24px;
+            padding: 1.5rem 1.2rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(44, 107, 47, 0.15);
+        }
+
+        .issue-card {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            background-color: var(--green-light);
+            border-radius: 18px;
+            padding: 1.2rem;
+            margin: 1.2rem 0;
+        }
+
+        .issue-icon {
+            font-size: 2rem;
+            line-height: 1;
+        }
+
+        .issue-text {
+            font-weight: 600;
+            color: var(--green-dark);
+            font-size: 1.1rem;
+        }
+
+        .issue-card small {
+            font-size: 0.9rem;
+        }
+
+        .tech-plan {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7rem;
+            margin: 1.2rem 0;
+        }
+
+        .plan-item {
+            background-color: var(--off-white);
+            border-radius: 100px;
+            padding: 0.4rem 1rem;
+            font-weight: 500;
+            color: var(--green-dark);
+            border: 1px dashed var(--green-soft);
+            font-size: 0.85rem;
+        }
+
+        .plan-item strong {
+            color: var(--green-primary);
+        }
+
+        .price-tag {
+            background-color: var(--green-primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            display: inline-block;
+            font-weight: 700;
+            margin-top: 0.5rem;
+            border: 1px solid var(--green-dark);
+            box-shadow: 0 2px 8px rgba(44, 107, 47, 0.3);
+            text-align: center;
+            width: 100%;
+        }
+
+        /* форма за абонамент */
+        .subscription-panel {
+            background-color: var(--white);
+            border-radius: 24px;
+            padding: 1.8rem 1.2rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(44, 107, 47, 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            font-weight: 600;
+            color: var(--green-dark);
+            display: block;
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.8rem 1.2rem;
+            font-size: 1rem;
+            border-radius: 50px;
+            border: 1.5px solid #ddeee0;
+            background-color: var(--off-white);
+            transition: all 0.2s;
+            font-family: inherit;
+            color: #1d3a1d;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%232c6b2f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1rem;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--green-primary);
+            box-shadow: 0 0 0 3px rgba(44, 107, 47, 0.2);
+            background-color: var(--white);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            margin: 1.2rem 0;
+        }
+
+        .checkbox-group input {
+            width: 1.2rem;
+            height: 1.2rem;
+            accent-color: var(--green-primary);
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        .checkbox-group label {
+            margin-bottom: 0;
+            font-weight: 400;
+            font-size: 0.9rem;
+            color: #2b3e2b;
+        }
+
+        .btn-submit {
+            background-color: var(--green-primary);
+            color: white;
+            border: none;
+            padding: 0.9rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            width: 100%;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 8px 18px -6px rgba(44, 107, 47, 0.4);
+            border: 1px solid transparent;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--green-dark);
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        .fine-print {
+            font-size: 0.8rem;
+            color: #5e6e5e;
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .payment-note {
+            background-color: var(--green-light);
+            border-radius: 12px;
+            padding: 0.7rem 1rem;
+            font-size: 0.9rem;
+            color: var(--green-dark);
+            margin: 1rem 0 0.5rem;
+            border: 1px solid var(--green-primary);
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .fine-print a {
+            color: var(--green-primary);
+            text-decoration: none;
+        }
+
+        /* секция какво включва */
+        .features-section {
+            padding: 2rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+
+        .section-title p {
+            text-align: center;
+        }
+
+        .card-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        @media (min-width: 640px) {
+            .card-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .card-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .feature-card {
+            background-color: var(--white);
+            padding: 1.5rem 1.2rem;
+            border-radius: 20px;
+            border: 1px solid var(--green-light);
+            transition: all 0.2s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--green-primary);
+            box-shadow: 0 20px 25px -12px rgba(44, 107, 47, 0.25);
+        }
+
+        .card-icon {
+            font-size: 2.2rem;
+            margin-bottom: 0.8rem;
+            background-color: var(--green-light);
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 0.6rem;
+            font-size: 1.2rem;
+        }
+
+        .feature-card p {
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+
+        /* секция за безплатен брой */
+        .free-sample {
+            background: linear-gradient(135deg, var(--white) 0%, var(--green-light) 100%);
+            border-radius: 28px;
+            padding: 2rem 1.2rem;
+            margin: 1.5rem 0 2rem;
+            text-align: center;
+            border: 1px solid rgba(44, 107, 47, 0.3);
+        }
+
+        .free-sample h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .free-sample p {
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 1rem;
+            text-align: center; /* Центрирано за по-добър вид в тази секция */
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin: 1.8rem 0;
+            text-align: left;
+        }
+
+        @media (min-width: 480px) {
+            .benefits-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            background-color: rgba(255,255,255,0.5);
+            padding: 0.8rem;
+            border-radius: 50px;
+        }
+
+        .benefit-icon {
+            font-size: 1.8rem;
+            min-width: 2.5rem;
+            text-align: center;
+        }
+
+        .btn-download {
+            display: inline-block;
+            background-color: var(--green-primary);
+            color: white;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 50px;
+            box-shadow: 0 10px 25px -8px var(--green-primary);
+            transition: all 0.2s;
+            border: 2px solid transparent;
+            margin: 0.5rem 0;
+            width: 100%;
+            max-width: 320px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-download:hover {
+            background-color: var(--green-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 20px 30px -10px var(--green-primary);
+        }
+
+        .btn-download:active {
+            transform: translateY(0);
+        }
+
+        /* футър */
+        .site-footer {
+            margin-top: 2rem;
+            background-color: var(--white);
+            border-top: 1px solid var(--green-light);
+            padding: 1.8rem 0;
+            color: #4f684f;
+            text-align: center;
+        }
+
+        .site-footer p {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        /* подобрения за мобилни */
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .hero-title {
+                font-size: 1.8rem;
+            }
+
+            .free-sample h2 {
+                font-size: 1.6rem;
+            }
+
+            .feature-list li {
+                font-size: 0.9rem;
+            }
+
+            .btn-download {
+                font-size: 1.1rem;
+                padding: 0.9rem 1.5rem;
+            }
+        }
+
+        /* подобрения за докосване */
+        button, a, input[type="checkbox"] {
+            cursor: pointer;
+        }
+
+        /* подобрена четливост */
+        .issue-text, .plan-item, .fine-print, .payment-note {
+            word-break: break-word;
+        }
+    </style>
+    <!-- Интер, шрифт -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="site-header">
+    <div class="container">
+        <div class="logo-area">
+            <span class="leaf-icon"></span>
+            <span class="logo-text">алтернативни<span>култури</span></span>
+        </div>
+    </div>
+</header>
+
+<main>
+    <!-- hero + форма -->
+    <section class="hero">
+        <div class="container hero-grid">
+            <!-- лява част: текст и предимства -->
+            <div>
+                <span class="hero-badge">📬 двумесечен бюлетин</span>
+                <h1 class="hero-title">Новите почви в земеделието</h1>
+
+                <!-- Встъпителен текст от infos.docx -->
+                <p>В епоха на климатична несигурност, растящи цени на ресурсите и променящи се пазарни изисквания, традиционното земеделие се сблъсква с безпрецедентни предизвикателства. Алтернативните земеделски култури не са просто модерна тенденция, а <span class="hero-highlight">стратегически отговор на тези глобални промени</span>.</p>
+
+                <p>Те представляват група от растения, които често са подценени, но притежават уникални биологични качества, позволяващи им да процъфтяват в условия, които биха били фатални за стандартните култури.</p>
+
+                <!-- Основни ползи от infos.docx -->
+                <ul class="feature-list">
+                    <li><strong>По-ниски разходи</strong> за напояване и торове</li>
+                    <li><strong>По-висока доходност</strong> на хектар в сравнение с традиционните култури</li>
+                    <li><strong>Устойчивост</strong> към суша и екстремни температури</li>
+                    <li><strong>Пазарна ниша</strong> с по-малка конкуренция</li>
+                    <li><strong>Подкрепа за биоразнообразието</strong> и почвеното здраве</li>
+                </ul>
+
+                <!-- акцент за бюлетина -->
+                <div class="bulletin-highlight">
+                    <h3>📘 във всеки брой:</h3>
+                    <div class="issue-card">
+                        <span class="issue-icon">📊</span>
+                        <div>
+                            <div class="issue-text">технологична карта и примерен бизнес план</div>
+                            <small>стъпка по стъпка: от семе до прибиране</small>
+                        </div>
+                    </div>
+                    <div class="tech-plan">
+                        <span class="plan-item"><strong>анализ</strong> на пазара</span>
+                        <span class="plan-item"><strong>рискове</strong> и субсидии</span>
+                    </div>
+                    <p style="margin-bottom: 0.5rem; font-size: 0.95rem;">🌾 Бюлетинът е PDF (40+ стр.) — изпращаме на email на 15-то число на нечетния месец.</p>
+                    <div class="price-tag">💰 Годишен абонамент: 40 Евро</div>
+                </div>
+            </div>
+
+            <!-- дясна част: форма за абонамент с FormSubmit -->
+            <div class="subscription-panel">
+                <h2 style="font-size: 1.6rem; margin-bottom: 0.5rem;">Абонирай се</h2>
+                <p style="color: #3b543b; font-size: 0.95rem; text-align: center;">Първият брой — веднага като се абонираш.</p>
+
+                <form action="https://formsubmit.co/roman.rachkov@gmail.com" method="POST">
+                    <!-- FormSubmit конфигурация -->
+                    <input type="hidden" name="_next" value="https://medonos.xyz/blagodarim.html">
+                    <input type="hidden" name="_subject" value="Нов абонамент за бюлетин Алтернативни култури">
+                    <input type="hidden" name="_captcha" value="false">
+                    <input type="text" name="_honey" style="display:none">
+
+                    <div class="form-group">
+                        <label for="name">Име</label>
+                        <input type="text" id="name" name="Име" placeholder="Вашето име" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Имейл <span style="font-weight: 400;">(за достъп до бюлетина)</span></label>
+                        <input type="email" id="email" name="Имейл" placeholder="fermer@example.com" required>
+                    </div>
+
+                    <!-- НОВО ПОЛЕ: Телефон -->
+                    <div class="form-group">
+                        <label for="phone">Телефон <span style="font-weight: 400;">(за връзка при плащане)</span></label>
+                        <input type="tel" id="phone" name="Телефон" placeholder="+359 888 123 456" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="culture-interest">Интересувам се специално от</label>
+                        <select id="culture-interest" name="Интерес">
+                            <option value="маслодайни">Маслодайни култури (лавандула, роза, рапица)</option>
+                            <option value="зърнени">Древни зърнени (лимец, еднолимец, камут)</option>
+                            <option value="бобови">Бобови / алтернативни (нахут, леща, соя)</option>
+                            <option value="овощни">Хибридни ягодоплодни & овощни</option>
+                            <option value="зеленчуци">Специални зеленчуци (патладжан, аспержи)</option>
+                            <option value="други">Други / всички</option>
+                        </select>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="consent" name="Съгласие" value="да" required>
+                        <label for="consent">Съгласен/на личните данни да се обработват за изпращане на бюлетина</label>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Абонирам се ➔</button>
+
+                    <!-- НОВА ИНФОРМАЦИЯ за плащане -->
+                    <div class="payment-note">
+                        📞 След успешно получена заявка ще се свържем с вас за да уточним начина на плащане
+                    </div>
+
+                    <div class="fine-print">
+                        • Без спам • Отписване по всяко време •
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- СЕКЦИЯ: Безплатен брой с линк към broj1.pdf -->
+    <section class="container">
+        <div class="free-sample">
+            <h2>🌿 Искате ли да се уверите сами?</h2>
+            <p>Изтеглете един безплатен брой на бюлетина и разгледайте:</p>
+
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <span class="benefit-icon">📋</span>
+                    <span><strong>Пълна технологична карта</strong></span>
+                </div>
+                <div class="benefit-item">
+                    <span class="benefit-icon">💰</span>
+                    <span><strong>Примерен бизнес план</strong></span>
+                </div>
+                <div class="benefit-item">
+                    <span class="benefit-icon">🧑‍🌾</span>
+                    <span><strong>Практически съвети</strong></span>
+                </div>
+            </div>
+
+            <a href="broj1.pdf" class="btn-download" download>📥 Изтегли безплатен брой</a>
+            <p style="font-size: 0.85rem; opacity: 0.8; text-align: center;">PDF формат • 40+ страници • веднага за четене</p>
+        </div>
+    </section>
+
+    <!-- детайлни предимства – карти -->
+    <section class="features-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Какво прави бюлетина незаменим?</h2>
+                <p style="color: #3e583e; text-align: center;">Съдържание, което спестява грешки и увеличава рентабилността</p>
+            </div>
+            <div class="card-grid">
+                <div class="feature-card">
+                    <div class="card-icon">🌿</div>
+                    <h3>Технологична карта A–Я</h3>
+                    <p>Сортове, гъстота, биоторове, напояване, растителна защита — всичко обобщено в 6 страници.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="card-icon">📈</div>
+                    <h3>Бизнесплан с числа</h3>
+                    <p>Примерен план за 10 дка: разходи, инвестиции, пазарни цени, чувствителност, печалба.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="card-icon">🧑‍🌾</div>
+                    <h3>Опит на фермери</h3>
+                    <p>Реални случаи от България и чужбина — какво се получава и кои са клопките.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="card-icon">📋</div>
+                    <h3>Списък с контакти</h3>
+                    <p>Доставчици на посадъчен материал, семена, машини и преработватели.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="card-icon">🌎</div>
+                    <h3>Нишови култури</h3>
+                    <p>Хмел, киноа, лен, тиква за семки, малини, асаи (оранжерийни) и други.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="card-icon">📆</div>
+                    <h3>Сезонен календар</h3>
+                    <p>Кога точно се сее, подхранва, пръска и прибира — удобна таблица.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <p>© 2025 Бюлетин Алтернативни култури — за напредничави земеделци</p>
+        <p style="font-size: 0.8rem; opacity: 0.8;">Изданието се фокусира върху нови и алтернативни култури с икономически потенциал.</p>
+    </div>
+</footer>
+
+</body>
+</html>
