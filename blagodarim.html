@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Благодарим за абонамента | Алтернативни култури</title>
+    <!-- Дизайн: напълно съобразен с основната страница – бяло и зелено, модерен, изчистен, мобилен пръв -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --white: #ffffff;
+            --off-white: #f8fbf8;
+            --green-light: #e2f0e2;
+            --green-primary: #2c6b2f;
+            --green-dark: #1d4a1f;
+            --green-soft: #5b8c5a;
+            --grey-text: #2e3b2e;
+            --shadow-sm: 0 10px 25px -5px rgba(0, 32, 0, 0.1), 0 8px 10px -6px rgba(0, 32, 0, 0.02);
+            --shadow-md: 0 20px 30px -10px rgba(44, 107, 47, 0.2);
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--off-white);
+            color: var(--grey-text);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1, h2, h3 {
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--green-dark);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            line-height: 1.2;
+            margin-bottom: 0.75rem;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+            color: #2d3a2d;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            width: 100%;
+        }
+
+        /* хедър същият като в основната страница */
+        .site-header {
+            background-color: var(--white);
+            padding: 1rem 0;
+            border-bottom: 2px solid var(--green-light);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .leaf-icon {
+            background-color: var(--green-primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50% 50% 0 50%;
+            transform: rotate(45deg);
+            display: inline-block;
+            position: relative;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--green-dark);
+        }
+
+        .logo-text span {
+            color: var(--green-primary);
+            font-weight: 400;
+        }
+
+        /* основен благодарствен блок */
+        .thanks-section {
+            padding: 3rem 0 2rem;
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .thanks-card {
+            background-color: var(--white);
+            border-radius: 40px;
+            padding: 3rem 2rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(44, 107, 47, 0.2);
+            max-width: 750px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .success-icon {
+            background-color: var(--green-light);
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            font-size: 3.5rem;
+            border: 3px solid var(--green-primary);
+            box-shadow: 0 0 0 6px rgba(44, 107, 47, 0.1);
+        }
+
+        .success-icon span {
+            transform: scale(1.2);
+        }
+
+        .highlight-green {
+            color: var(--green-primary);
+            font-weight: 700;
+            background-color: var(--green-light);
+            padding: 0.2rem 0.6rem;
+            border-radius: 30px;
+            font-size: 1rem;
+            display: inline-block;
+            margin: 1rem 0 0.5rem;
+        }
+
+        .bullet-list {
+            list-style: none;
+            max-width: 400px;
+            margin: 2rem auto;
+            text-align: left;
+        }
+
+        .bullet-list li {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+            margin-bottom: 1rem;
+            background-color: var(--off-white);
+            padding: 0.7rem 1.2rem;
+            border-radius: 50px;
+            border: 1px solid var(--green-light);
+        }
+
+        .bullet-list li::before {
+            content: "📬";
+            font-size: 1.3rem;
+            margin-right: 0.3rem;
+        }
+
+        .bullet-list li:nth-child(2)::before {
+            content: "🌱";
+        }
+        .bullet-list li:nth-child(3)::before {
+            content: "📅";
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0 1rem;
+        }
+
+        .btn-primary {
+            background-color: var(--green-primary);
+            color: white;
+            border: none;
+            padding: 0.9rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 8px 18px -6px rgba(44, 107, 47, 0.4);
+            border: 1px solid transparent;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--green-dark);
+            transform: scale(1.02);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--green-primary);
+            border: 2px solid var(--green-primary);
+            padding: 0.85rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-outline:hover {
+            background-color: var(--green-light);
+        }
+
+        .extra-note {
+            background-color: var(--green-light);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border-left: 5px solid var(--green-primary);
+            font-size: 0.95rem;
+        }
+
+        .extra-note strong {
+            color: var(--green-dark);
+        }
+
+        .site-footer {
+            margin-top: 2rem;
+            background-color: var(--white);
+            border-top: 1px solid var(--green-light);
+            padding: 2rem 0;
+            color: #4f684f;
+            text-align: center;
+        }
+
+        /* мобилни корекции */
+        @media (max-width: 480px) {
+            h1 { font-size: 2rem; }
+            .thanks-card { padding: 2rem 1.2rem; }
+            .success-icon { width: 80px; height: 80px; font-size: 2.8rem; }
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="site-header">
+    <div class="container">
+        <div class="logo-area">
+            <span class="leaf-icon"></span>
+            <span class="logo-text">алтернативни<span>култури</span></span>
+        </div>
+    </div>
+</header>
+
+<main class="thanks-section">
+    <div class="container">
+        <div class="thanks-card">
+            <!-- голяма иконка за успех -->
+            <div class="success-icon">
+                <span>✅</span>
+            </div>
+
+            <h1>Благодарим ви!</h1>
+            <p style="font-size: 1.2rem; max-width: 500px; margin-left: auto; margin-right: auto;">
+                Вие се абонирахте за <strong>двумесечния специализиран бюлетин</strong> за алтернативни земеделски култури.
+            </p>
+
+            <span class="highlight-green">потвърждение е изпратено на имейла ви</span>
+
+            <ul class="bullet-list">
+                <li>Очаквайте първия брой на 15-то число на следващия нечетен месец.</li>
+                <li>Включва две технологични карти + примерен бизнесплан.</li>
+                <li>Ще получавате и известия за бъдещи издания.</li>
+            </ul>
+
+            <div class="btn-group">
+                <a href="index.html" class="btn-primary">⬅ Към началната страница</a>
+                <a href="#" class="btn-outline" onclick="alert('Можете да ни пишете на: бюлетин@алтернативникултури.бг'); return false;">Контакт</a>
+            </div>
+
+            <div class="extra-note">
+                <strong>📧 Проверете вашата поща</strong> (и папка спам). Изпратихме писмо с потвърждение и линк за достъп до архива с предишни броеве (за нови абонати).
+            </div>
+
+            <p style="font-size: 0.9rem; margin-top: 2rem; color: #5e745e;">
+                Благодарим, че подкрепяте устойчивото и иновативно земеделие! 🌾
+            </p>
+        </div>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <p>© 2025 Бюлетин Алтернативни култури — специализирано издание за нови земеделски практики</p>
+        <p style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.8;">
+            <a href="#" style="color: var(--green-dark);">Политика за поверителност</a> • <a href="#" style="color: var(--green-dark);">Отписване</a>
+        </p>
+        <!-- малка препратка към основната страница (ако няма index.html, но тук е за удобство) -->
+        <p style="margin-top: 1rem;">🔗 <a href="index.html" style="color: var(--green-primary);">Върнете се към формата за абонамент</a></p>
+    </div>
+</footer>
+
+<script>
+    // Малък скрипт, който приветства, но не пречи на дизайна
+    (function() {
+        // проверка дали идваме от form (document.referrer), но не е задължително
+        console.log('Страница blagodarim.html заредена — успешен абонамент.');
+    })();
+</script>
+
+<!--
+    Тази страница е проектирана да бъде отворена след изпращане на формата от index.html.
+    Дизайнът следва същата бяло-зелена гама, модерен и изчистен, напълно адаптивен.
+    При нужда връзките могат да се актуализират спрямо реалните URL.
+-->
+</body>
+</html>
