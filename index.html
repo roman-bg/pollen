@@ -1,1 +1,311 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Агро Мет Пчелар</title>
 
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+:root{
+    --green:#2b7a3e;
+    --green-dark:#1e5a2f;
+}
+
+/* APP SHELL */
+body{
+    font-family: system-ui, sans-serif;
+    background:#dfeadf;
+}
+
+.app-shell{
+    max-width:420px;
+    margin:auto;
+    min-height:100vh;
+    background:#f7faf7;
+    border-radius:40px;
+    overflow:hidden;
+    box-shadow:0 40px 80px rgba(0,0,0,0.15);
+}
+
+/* SPLASH */
+#splash{
+    position:fixed;
+    inset:0;
+    background:linear-gradient(135deg,var(--green),#4c8b3a);
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    font-size:1.4rem;
+    z-index:9999;
+    transition:0.6s;
+}
+
+/* HEADER */
+header{
+    position:sticky;
+    top:0;
+    z-index:10;
+    padding:20px;
+    background:rgba(255,255,255,0.85);
+    backdrop-filter:blur(12px);
+    border-radius:0 0 24px 24px;
+}
+
+h1{
+    text-align:center;
+    font-size:1.5rem;
+    color:var(--green);
+}
+
+/* SEARCH */
+.controls{
+    margin-top:12px;
+}
+
+.search-group{
+    display:flex;
+    gap:10px;
+}
+
+#citySearch{
+    flex:1;
+    padding:14px;
+    border:none;
+    border-radius:18px;
+    background:#eef5ee;
+}
+
+.search-btn{
+    background:var(--green);
+    color:white;
+    border:none;
+    padding:0 18px;
+    border-radius:16px;
+}
+
+/* SELECT */
+#stationPicker{
+    width:100%;
+    margin-top:10px;
+    padding:12px;
+    border-radius:16px;
+    border:none;
+    background:#eef5ee;
+}
+
+/* CONTAINER */
+.container{
+    padding:16px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+}
+
+/* CARD */
+.card{
+    background:white;
+    border-radius:20px;
+    padding:16px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.08);
+    animation:fadeUp .5s ease forwards;
+}
+
+.card:active{
+    transform:scale(0.98);
+}
+
+@keyframes fadeUp{
+    from{opacity:0; transform:translateY(20px);}
+    to{opacity:1; transform:translateY(0);}
+}
+
+.station-name{
+    font-weight:700;
+    color:var(--green-dark);
+    margin-bottom:12px;
+}
+
+/* PLANTS */
+.plant-row{
+    margin-bottom:14px;
+}
+
+.progress{
+    height:10px;
+    background:#e3eee3;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.fill{
+    height:100%;
+    background:linear-gradient(90deg,#5fad56,#3e8e41);
+}
+
+.fill.critical{
+    background:linear-gradient(90deg,#e6b422,#e0873a);
+}
+
+.status{
+    font-size:0.8rem;
+}
+
+/* INFO */
+.info{
+    text-align:center;
+    padding:20px;
+}
+
+/* FOOTER */
+footer{
+    text-align:center;
+    padding:20px;
+    font-size:0.7rem;
+    opacity:0.6;
+}
+</style>
+</head>
+
+<body>
+
+<div id="splash">🌿<br>Зареждане...</div>
+
+<div class="app-shell">
+
+<header>
+    <h1>🐝 Агро Мет</h1>
+
+    <div class="controls">
+        <div class="search-group">
+            <input id="citySearch" placeholder="Търси град..." onkeypress="if(event.key==='Enter')searchByCity()">
+            <button class="search-btn" onclick="vibrate();searchByCity()">Търси</button>
+        </div>
+
+        <select id="stationPicker" onchange="selectStation()">
+            <option value="all">Всички станции</option>
+        </select>
+    </div>
+</header>
+
+<div class="container" id="data-container">
+    <div class="info">Зареждане...</div>
+</div>
+
+<footer>данни: treebombs.xyz</footer>
+
+</div>
+
+<script>
+let allData=[];
+const API_URL='https://treebombs.xyz/data.php';
+
+function vibrate(){
+    if(navigator.vibrate) navigator.vibrate(20);
+}
+
+async function fetchData(){
+    try{
+        const res=await fetch(API_URL);
+        const result=await res.json();
+
+        if(result.status==="success"){
+            allData=result.data;
+            populatePicker(allData);
+
+            document.getElementById("data-container").innerHTML=
+                '<div class="info">Избери станция или търси град</div>';
+        }
+
+    }catch(e){
+        document.getElementById("data-container").innerHTML=
+            '<div class="info">Грешка при зареждане</div>';
+    }
+
+    setTimeout(()=>{
+        const splash=document.getElementById("splash");
+        splash.style.opacity="0";
+        setTimeout(()=>splash.remove(),600);
+    },800);
+}
+
+function populatePicker(data){
+    const picker=document.getElementById("stationPicker");
+    picker.innerHTML='<option value="all">Всички станции</option>';
+
+    data.forEach(item=>{
+        const opt=document.createElement("option");
+        opt.value=item.station;
+        opt.textContent=item.station;
+        picker.appendChild(opt);
+    });
+}
+
+function selectStation(){
+    const val=document.getElementById("stationPicker").value;
+    if(val==="all") renderCards(allData);
+    else renderCards(allData.filter(i=>i.station===val));
+}
+
+async function searchByCity(){
+    const city=document.getElementById("citySearch").value.trim();
+    if(!city) return;
+
+    const geo=await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${city}, Bulgaria&limit=1`);
+    const data=await geo.json();
+
+    if(data.length){
+        findNearest(parseFloat(data[0].lat),parseFloat(data[0].lon));
+    }
+}
+
+function findNearest(lat,lon){
+    let nearest=null;
+    let min=Infinity;
+
+    allData.forEach(st=>{
+        const d=Math.hypot(st.lat-lat,st.lon-lon);
+        if(d<min){min=d; nearest=st;}
+    });
+
+    if(nearest) renderCards([nearest]);
+}
+
+function renderCards(data){
+    const container=document.getElementById("data-container");
+    container.innerHTML="";
+
+    data.forEach(item=>{
+        let plants="";
+
+        (item.forecasts||[]).forEach(f=>{
+            const critical=f.progress_percent>90;
+
+            plants+=`
+            <div class="plant-row">
+                <div>${f.plant} (${f.progress_percent}%)</div>
+                <div class="progress">
+                    <div class="fill ${critical?'critical':''}" style="width:${f.progress_percent}%"></div>
+                </div>
+            </div>`;
+        });
+
+        const card=document.createElement("div");
+        card.className="card";
+        card.innerHTML=`
+            <div class="station-name">${item.station}</div>
+            ${plants}
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+fetchData();
+</script>
+
+</body>
+</html>
