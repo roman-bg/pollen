@@ -1,4 +1,4 @@
-const CACHE_NAME = "agro-met-v3";
+const CACHE_NAME = "agro-met-v4";
 
 const urlsToCache = [
     "/",
