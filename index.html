@@ -3,7 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Агро Мет Пчелар</title>
+
+<title>Агро Мет</title>
+
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<meta name="theme-color" content="#2b7a3e">
 
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -13,7 +19,6 @@
     --green-dark:#1e5a2f;
 }
 
-/* APP SHELL */
 body{
     font-family: system-ui, sans-serif;
     background:#dfeadf;
@@ -26,7 +31,6 @@ body{
     background:#f7faf7;
     border-radius:40px;
     overflow:hidden;
-    box-shadow:0 40px 80px rgba(0,0,0,0.15);
 }
 
 /* SPLASH */
@@ -38,53 +42,41 @@ body{
     display:flex;
     align-items:center;
     justify-content:center;
-    flex-direction:column;
-    font-size:1.4rem;
     z-index:9999;
-    transition:0.6s;
 }
 
 /* HEADER */
 header{
-    position:sticky;
-    top:0;
-    z-index:10;
     padding:20px;
-    background:rgba(255,255,255,0.85);
-    backdrop-filter:blur(12px);
-    border-radius:0 0 24px 24px;
+    background:white;
 }
 
 h1{
     text-align:center;
-    font-size:1.5rem;
     color:var(--green);
 }
 
 /* SEARCH */
-.controls{
-    margin-top:12px;
-}
-
 .search-group{
     display:flex;
     gap:10px;
+    margin-top:10px;
 }
 
 #citySearch{
     flex:1;
-    padding:14px;
+    padding:12px;
     border:none;
-    border-radius:18px;
+    border-radius:12px;
     background:#eef5ee;
 }
 
 .search-btn{
+    padding:0 16px;
+    border:none;
+    border-radius:12px;
     background:var(--green);
     color:white;
-    border:none;
-    padding:0 18px;
-    border-radius:16px;
 }
 
 /* SELECT */
@@ -92,120 +84,96 @@ h1{
     width:100%;
     margin-top:10px;
     padding:12px;
-    border-radius:16px;
+    border-radius:12px;
     border:none;
     background:#eef5ee;
 }
 
-/* CONTAINER */
-.container{
-    padding:16px;
-    display:flex;
-    flex-direction:column;
-    gap:16px;
+/* INSTALL BUTTON */
+#installBtn{
+    margin-top:10px;
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:16px;
+    background:var(--green-dark);
+    color:white;
+    display:none;
 }
 
-/* CARD */
+/* CONTENT */
+.container{
+    padding:16px;
+}
+
 .card{
     background:white;
     border-radius:20px;
     padding:16px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.08);
-    animation:fadeUp .5s ease forwards;
-}
-
-.card:active{
-    transform:scale(0.98);
-}
-
-@keyframes fadeUp{
-    from{opacity:0; transform:translateY(20px);}
-    to{opacity:1; transform:translateY(0);}
-}
-
-.station-name{
-    font-weight:700;
-    color:var(--green-dark);
     margin-bottom:12px;
 }
 
-/* PLANTS */
-.plant-row{
-    margin-bottom:14px;
-}
-
-.progress{
-    height:10px;
-    background:#e3eee3;
-    border-radius:20px;
-    overflow:hidden;
-}
-
-.fill{
-    height:100%;
-    background:linear-gradient(90deg,#5fad56,#3e8e41);
-}
-
-.fill.critical{
-    background:linear-gradient(90deg,#e6b422,#e0873a);
-}
-
-.status{
-    font-size:0.8rem;
-}
-
-/* INFO */
-.info{
-    text-align:center;
-    padding:20px;
-}
-
-/* FOOTER */
-footer{
-    text-align:center;
-    padding:20px;
-    font-size:0.7rem;
-    opacity:0.6;
+.station-name{
+    font-weight:bold;
+    color:var(--green-dark);
 }
 </style>
 </head>
 
 <body>
 
-<div id="splash">🌿<br>Зареждане...</div>
+<div id="splash">Зареждане...</div>
 
 <div class="app-shell">
 
 <header>
     <h1>Агро Мет</h1>
 
-    <div class="controls">
-        <div class="search-group">
-            <input id="citySearch" placeholder="Търси град..." onkeypress="if(event.key==='Enter')searchByCity()">
-            <button class="search-btn" onclick="vibrate();searchByCity()">Търси</button>
-        </div>
-
-        <select id="stationPicker" onchange="selectStation()">
-            <option value="all">Всички станции</option>
-        </select>
+    <div class="search-group">
+        <input id="citySearch" placeholder="Търси град..."
+        onkeypress="if(event.key==='Enter')searchByCity()">
+        <button class="search-btn" onclick="searchByCity()">Търси</button>
     </div>
+
+    <select id="stationPicker" onchange="selectStation()">
+        <option value="all">Всички станции</option>
+    </select>
+
+    <button id="installBtn">Инсталирай приложението</button>
 </header>
 
 <div class="container" id="data-container">
     <div class="info">Зареждане...</div>
 </div>
 
-<footer>данни: treebombs.xyz</footer>
-
 </div>
 
 <script>
+let deferredPrompt;
 let allData=[];
-const API_URL='https://treebombs.xyz/data.php';
 
-function vibrate(){
-    if(navigator.vibrate) navigator.vibrate(20);
+// 👉 INSTALL BUTTON
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    document.getElementById("installBtn").style.display = "block";
+});
+
+document.getElementById("installBtn").addEventListener("click", async () => {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
+    }
+});
+
+// 👉 SERVICE WORKER
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js");
 }
+
+// 👉 API
+const API_URL='https://treebombs.xyz/data.php';
 
 async function fetchData(){
     try{
@@ -216,22 +184,20 @@ async function fetchData(){
             allData=result.data;
             populatePicker(allData);
 
-            document.getElementById("data-container").innerHTML=
+            document.getElementById("data-container").innerHTML =
                 '<div class="info">Избери станция или търси град</div>';
         }
 
     }catch(e){
-        document.getElementById("data-container").innerHTML=
-            '<div class="info">Грешка при зареждане</div>';
+        document.getElementById("data-container").innerHTML="Грешка";
     }
 
     setTimeout(()=>{
-        const splash=document.getElementById("splash");
-        splash.style.opacity="0";
-        setTimeout(()=>splash.remove(),600);
-    },800);
+        document.getElementById("splash").remove();
+    },500);
 }
 
+// 👉 POPULATE DROPDOWN
 function populatePicker(data){
     const picker=document.getElementById("stationPicker");
     picker.innerHTML='<option value="all">Всички станции</option>';
@@ -244,12 +210,20 @@ function populatePicker(data){
     });
 }
 
+// 👉 SELECT STATION
 function selectStation(){
     const val=document.getElementById("stationPicker").value;
-    if(val==="all") renderCards(allData);
-    else renderCards(allData.filter(i=>i.station===val));
+
+    if(val==="all"){
+        document.getElementById("data-container").innerHTML =
+            '<div class="info">Избери конкретна станция</div>';
+        return;
+    }
+
+    renderCards(allData.filter(i=>i.station===val));
 }
 
+// 👉 SEARCH
 async function searchByCity(){
     const city=document.getElementById("citySearch").value.trim();
     if(!city) return;
@@ -274,6 +248,7 @@ function findNearest(lat,lon){
     if(nearest) renderCards([nearest]);
 }
 
+// 👉 RENDER
 function renderCards(data){
     const container=document.getElementById("data-container");
     container.innerHTML="";
@@ -282,25 +257,17 @@ function renderCards(data){
         let plants="";
 
         (item.forecasts||[]).forEach(f=>{
-            const critical=f.progress_percent>90;
-
             plants+=`
-            <div class="plant-row">
-                <div>${f.plant} (${f.progress_percent}%)</div>
-                <div class="progress">
-                    <div class="fill ${critical?'critical':''}" style="width:${f.progress_percent}%"></div>
-                </div>
+            <div>
+                ${f.plant} (${f.progress_percent}%)
             </div>`;
         });
 
-        const card=document.createElement("div");
-        card.className="card";
-        card.innerHTML=`
+        container.innerHTML+=`
+        <div class="card">
             <div class="station-name">${item.station}</div>
             ${plants}
-        `;
-
-        container.appendChild(card);
+        </div>`;
     });
 }
 
