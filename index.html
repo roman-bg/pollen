@@ -152,19 +152,30 @@ h1{
 let deferredPrompt;
 let allData=[];
 
-// 👉 INSTALL BUTTON
+// 👉 скриване ако вече е инсталирано
+if (window.matchMedia('(display-mode: standalone)').matches) {
+    document.getElementById("installBtn").style.display = "none";
+}
+
+// 👉 показване на install бутона
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
     document.getElementById("installBtn").style.display = "block";
 });
 
+// 👉 клик на бутона
 document.getElementById("installBtn").addEventListener("click", async () => {
-    if (deferredPrompt) {
-        deferredPrompt.prompt();
-        await deferredPrompt.userChoice;
-        deferredPrompt = null;
-    }
+    if (!deferredPrompt) return;
+
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+});
+
+// 👉 скриване след инсталация
+window.addEventListener('appinstalled', () => {
+    document.getElementById("installBtn").style.display = "none";
 });
 
 // 👉 SERVICE WORKER
@@ -197,7 +208,7 @@ async function fetchData(){
     },500);
 }
 
-// 👉 POPULATE DROPDOWN
+// 👉 dropdown
 function populatePicker(data){
     const picker=document.getElementById("stationPicker");
     picker.innerHTML='<option value="all">Всички станции</option>';
@@ -210,7 +221,7 @@ function populatePicker(data){
     });
 }
 
-// 👉 SELECT STATION
+// 👉 избор
 function selectStation(){
     const val=document.getElementById("stationPicker").value;
 
@@ -223,7 +234,7 @@ function selectStation(){
     renderCards(allData.filter(i=>i.station===val));
 }
 
-// 👉 SEARCH
+// 👉 търсене
 async function searchByCity(){
     const city=document.getElementById("citySearch").value.trim();
     if(!city) return;
@@ -248,7 +259,7 @@ function findNearest(lat,lon){
     if(nearest) renderCards([nearest]);
 }
 
-// 👉 RENDER
+// 👉 render
 function renderCards(data){
     const container=document.getElementById("data-container");
     container.innerHTML="";
