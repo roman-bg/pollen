@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>АгроМет Пчелар</title>
+
+<link rel="manifest" href="manifest.json">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --primary:#2e7d32;
+  --surface:#f6fbf6;
+  --surface-variant:#e8f5e9;
+  --outline:#c8d8c8;
+}
+
+@media (prefers-color-scheme: dark){
+  :root{
+    --primary:#81c784;
+    --surface:#121212;
+    --surface-variant:#1e1e1e;
+    --outline:#2c2c2c;
+  }
+
+  body{color:white;}
+  .card{background:#1e1e1e;}
+  header{background:#1e1e1e;}
+}
+
+body{
+  font-family:system-ui;
+  background:var(--surface);
+  overscroll-behavior:none;
+  -webkit-tap-highlight-color:transparent;
+}
+
+/* HEADER */
+header{
+  position:sticky;
+  top:0;
+  padding:16px;
+  background:white;
+  border-bottom:1px solid var(--outline);
+  z-index:10;
+}
+
+h1{font-size:1.2rem;font-weight:600;}
+
+/* CONTROLS */
+.controls{margin-top:10px;display:flex;flex-direction:column;gap:10px;}
+
+#citySearch{
+  padding:14px;
+  border:none;
+  border-radius:28px;
+  background:var(--surface-variant);
+}
+
+.search-btn{
+  padding:12px;
+  border:none;
+  border-radius:24px;
+  background:var(--primary);
+  color:white;
+}
+
+/* SELECT */
+#stationPicker{
+  padding:12px;
+  border:none;
+  border-radius:20px;
+  background:var(--surface-variant);
+}
+
+/* CARDS */
+.container{
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.card{
+  background:white;
+  border-radius:16px;
+  padding:16px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.1);
+  transition:.2s;
+}
+
+.card:active{transform:scale(0.97);}
+
+.station-name{font-weight:600;margin-bottom:10px;}
+
+/* PROGRESS */
+.progress{
+  height:6px;
+  background:#e0e0e0;
+  border-radius:10px;
+}
+
+.fill{
+  height:100%;
+  background:var(--primary);
+}
+
+/* FAB */
+.fab{
+  position:fixed;
+  bottom:24px;
+  right:24px;
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  border:none;
+  background:var(--primary);
+  color:white;
+  font-size:22px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.3);
+}
+
+/* SPLASH */
+#splash{
+  position:fixed;
+  inset:0;
+  background:var(--primary);
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+  font-size:1.5rem;
+  transition:.5s;
+}
+
+/* SKELETON */
+.skeleton{
+  height:80px;
+  border-radius:16px;
+  background:linear-gradient(90deg,#eee,#ddd,#eee);
+  animation:shimmer 1.2s infinite;
+}
+
+@keyframes shimmer{
+  0%{background-position:-200px;}
+  100%{background-position:200px;}
+}
+</style>
+</head>
+
+<body>
+
+<div id="splash">🌿 Зареждане...</div>
+
+<header>
+<h1>🐝 АгроМет Пчелар</h1>
+
+<div class="controls">
+<input id="citySearch" placeholder="Търси град..." onkeypress="if(event.key==='Enter')searchByCity()">
+<button class="search-btn" onclick="vibrate();searchByCity()">Търси</button>
+<button class="search-btn" onclick="useMyLocation()">📍 Аз съм тук</button>
+
+<select id="stationPicker" onchange="selectStation()">
+<option value="all">Всички станции</option>
+</select>
+</div>
+</header>
+
+<div class="container" id="data-container">
+<div class="skeleton"></div>
+<div class="skeleton"></div>
+</div>
+
+<button class="fab" onclick="selectStation()">📡</button>
+
+<script>
+let allData=[];
+const API_URL='https://treebombs.xyz/data.php';
+
+/* VIBRATE */
+function vibrate(){navigator.vibrate?.(30);}
+
+/* FETCH */
+async function fetchData(){
+  try{
+    const res=await fetch(API_URL);
+    const result=await res.json();
+
+    if(result.status==="success"){
+      allData=result.data;
+      populatePicker(allData);
+      document.getElementById("data-container").innerHTML="Избери станция";
+    }
+
+  }catch(e){
+    document.getElementById("data-container").innerHTML="Грешка";
+  }
+
+  setTimeout(()=>{
+    splash.style.opacity=0;
+    setTimeout(()=>splash.remove(),500);
+  },700);
+}
+
+/* PICKER */
+function populatePicker(data){
+  const picker=document.getElementById("stationPicker");
+  picker.innerHTML='<option value="all">Всички станции</option>';
+
+  data.forEach(i=>{
+    const opt=document.createElement("option");
+    opt.value=i.station;
+    opt.textContent=i.station;
+    picker.appendChild(opt);
+  });
+}
+
+/* SELECT */
+function selectStation(){
+  const val=document.getElementById("stationPicker").value;
+
+  if(val==="all") renderCards(allData);
+  else renderCards(allData.filter(i=>i.station===val));
+}
+
+/* SEARCH */
+async function searchByCity(){
+  const city=document.getElementById("citySearch").value.trim();
+  if(!city) return;
+
+  const geo=await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${city}, Bulgaria&limit=1`);
+  const data=await geo.json();
+
+  if(data.length){
+    findNearest(parseFloat(data[0].lat),parseFloat(data[0].lon));
+  }
+}
+
+/* GPS */
+function useMyLocation(){
+  navigator.geolocation.getCurrentPosition(pos=>{
+    findNearest(pos.coords.latitude,pos.coords.longitude);
+  });
+}
+
+/* NEAREST */
+function findNearest(lat,lon){
+  let nearest=null,min=Infinity;
+
+  allData.forEach(st=>{
+    const d=Math.hypot(st.lat-lat,st.lon-lon);
+    if(d<min){min=d;nearest=st;}
+  });
+
+  if(nearest) renderCards([nearest]);
+}
+
+/* RENDER */
+function renderCards(data){
+  const container=document.getElementById("data-container");
+  container.innerHTML="";
+
+  data.forEach(item=>{
+    let plants="";
+
+    (item.forecasts||[]).forEach(f=>{
+      let status="Очакване";
+      if(f.progress_percent>90) status="🔥 Почти цъфти";
+      if(f.progress_percent===100) status="🌼 Цъфти";
+
+      plants+=`
+      <div>
+        <div>${f.plant} (${f.progress_percent}%)</div>
+        <div class="progress">
+          <div class="fill" style="width:${f.progress_percent}%"></div>
+        </div>
+        <small>${status}</small>
+      </div>`;
+    });
+
+    const card=document.createElement("div");
+    card.className="card";
+
+    card.innerHTML=`
+      <div class="station-name">${item.station}</div>
+      ${plants}
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+/* NOTIFICATIONS */
+function notify(text){
+  if(Notification.permission==="granted"){
+    new Notification("🌼 Пчелар",{body:text});
+  }
+}
+
+/* SERVICE WORKER */
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js');
+}
+
+fetchData();
+</script>
+
+</body>
+</html>
