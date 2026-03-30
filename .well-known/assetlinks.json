@@ -1,1 +1,8 @@
-
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.tvoiat.paket",
+    "sha256_cert_fingerprints": ["6F:34:C1:13:29:93:A9:FB:CE:AE:EA:2E:10:2F:73:06:61:7E:5D:70:73:6A:B8:A5:F2:F7:CF:7B:1B:BA:0C:3D"]
+  }
+}]
