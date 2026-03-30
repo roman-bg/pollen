@@ -117,6 +117,31 @@ h1{
     font-weight:bold;
     color:var(--green-dark);
 }
+
+/* центриране на информационния блок + допълнителен стил */
+.info-message-wrapper {
+    text-align: center;
+    margin: 16px 0 8px 0;
+}
+
+.info-text {
+    background: #eef5ee;
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 40px;
+    font-size: 0.9rem;
+    color: #1e5a2f;
+    font-weight: 500;
+}
+
+.hint-text {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #4a6a3b;
+    margin-top: 4px;
+    margin-bottom: 16px;
+    letter-spacing: 0.3px;
+}
 </style>
 </head>
 
@@ -143,7 +168,7 @@ h1{
 </header>
 
 <div class="container" id="data-container">
-    <div class="info">Зареждане...</div>
+    <!-- Тук динамично ще се показва информационният блок + картите -->
 </div>
 
 </div>
@@ -195,17 +220,30 @@ async function fetchData(){
             allData=result.data;
             populatePicker(allData);
 
-            document.getElementById("data-container").innerHTML =
-                '<div class="info">Избери станция или търси град</div>';
+            // показваме центриран информационен текст + подсказка за СЕТ
+            renderEmptyStateWithHint();
         }
 
     }catch(e){
-        document.getElementById("data-container").innerHTML="Грешка";
+        document.getElementById("data-container").innerHTML="<div class='info-message-wrapper'><div class='info-text'>⚠️ Грешка при зареждане</div></div>";
     }
 
     setTimeout(()=>{
         document.getElementById("splash").remove();
     },500);
+}
+
+// функция за празно състояние с центриран текст и допълнителен надпис
+function renderEmptyStateWithHint() {
+    const container = document.getElementById("data-container");
+    container.innerHTML = `
+        <div class="info-message-wrapper">
+            <div class="info-text">Избери станция или търси град</div>
+        </div>
+        <div class="hint-text">
+            СЕТ = процент оставащ до цъфтежа
+        </div>
+    `;
 }
 
 // 👉 dropdown
@@ -221,29 +259,49 @@ function populatePicker(data){
     });
 }
 
-// 👉 избор
+// 👉 избор на станция от падащото меню
 function selectStation(){
     const val=document.getElementById("stationPicker").value;
 
     if(val==="all"){
-        document.getElementById("data-container").innerHTML =
-            '<div class="info">Избери конкретна станция</div>';
+        // показваме отново центрираното съобщение с подсказката
+        renderEmptyStateWithHint();
         return;
     }
 
     renderCards(allData.filter(i=>i.station===val));
 }
 
-// 👉 търсене
+// 👉 търсене по град (геокодиране + най-близка станция)
 async function searchByCity(){
     const city=document.getElementById("citySearch").value.trim();
     if(!city) return;
 
-    const geo=await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${city}, Bulgaria&limit=1`);
-    const data=await geo.json();
+    // добавяме лек индикатор за зареждане
+    const container = document.getElementById("data-container");
+    container.innerHTML = `<div class="info-message-wrapper"><div class="info-text">🔍 Търсене на "${city}" ...</div></div>`;
 
-    if(data.length){
-        findNearest(parseFloat(data[0].lat),parseFloat(data[0].lon));
+    try {
+        const geo=await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}, Bulgaria&limit=1`);
+        const data=await geo.json();
+
+        if(data.length){
+            findNearest(parseFloat(data[0].lat),parseFloat(data[0].lon));
+        } else {
+            container.innerHTML = `
+                <div class="info-message-wrapper">
+                    <div class="info-text">❌ Градът не е намерен в България</div>
+                </div>
+                <div class="hint-text">🌱 СЕТ = процент оставащ до цъфтежа</div>
+            `;
+        }
+    } catch(e) {
+        container.innerHTML = `
+            <div class="info-message-wrapper">
+                <div class="info-text">⚠️ Грешка при геокодиране</div>
+            </div>
+            <div class="hint-text">🌱 СЕТ = процент оставащ до цъфтежа</div>
+        `;
     }
 }
 
@@ -256,32 +314,63 @@ function findNearest(lat,lon){
         if(d<min){min=d; nearest=st;}
     });
 
-    if(nearest) renderCards([nearest]);
+    if(nearest) {
+        renderCards([nearest]);
+    } else {
+        const container = document.getElementById("data-container");
+        container.innerHTML = `
+            <div class="info-message-wrapper">
+                <div class="info-text">🔍 Няма налични станции в района</div>
+            </div>
+            <div class="hint-text">🌱 СЕТ = процент оставащ до цъфтежа</div>
+        `;
+    }
 }
 
-// 👉 render
+// 👉 основно рендериране на карти с прогнози
 function renderCards(data){
     const container=document.getElementById("data-container");
     container.innerHTML="";
 
+    if(!data || data.length === 0){
+        // ако няма данни (не би трябвало да се случва), но за всеки случай:
+        renderEmptyStateWithHint();
+        return;
+    }
+
     data.forEach(item=>{
         let plants="";
-
-        (item.forecasts||[]).forEach(f=>{
-            plants+=`
-            <div>
-                ${f.plant} (${f.progress_percent}%)
-            </div>`;
-        });
+        // добавяме прогнозите за различните растения
+        if(item.forecasts && item.forecasts.length){
+            item.forecasts.forEach(f=>{
+                plants+=`
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #e0e7e0;">
+                    <span style="font-weight:500;">${f.plant}</span>
+                    <span style="background:#eef5ee; padding:4px 12px; border-radius:20px; font-weight:600; color:#1e5a2f;">${f.progress_percent}%</span>
+                </div>`;
+            });
+        } else {
+            plants = `<div style="padding: 10px 0; color:#666;">Няма прогнози за тази станция</div>`;
+        }
 
         container.innerHTML+=`
         <div class="card">
-            <div class="station-name">${item.station}</div>
+            <div class="station-name" style="margin-bottom:12px;">📍 ${item.station}</div>
             ${plants}
         </div>`;
     });
+
+    // винаги добавяме подсказката за СЕТ след картите (за да е видима, че процентът е оставащ до цъфтеж)
+    const hintDiv = document.createElement("div");
+    hintDiv.className = "hint-text";
+    hintDiv.style.marginTop = "12px";
+    hintDiv.style.marginBottom = "8px";
+    hintDiv.style.textAlign = "center";
+    hintDiv.innerText = "🌱 СЕТ = процент оставащ до цъфтежа";
+    container.appendChild(hintDiv);
 }
 
+// стартиране: зареждаме данни
 fetchData();
 </script>
 
